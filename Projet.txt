@@ -1,0 +1,56 @@
+TAL projet
+
+Tâches:
+
+- parser fichiers .conll
+  - BB stocker en matrice ?
+
+- API "oracle"
+  - input : features (mot 1, mot 2, pdd 1, pdd 2, dist ...)
+  - output : action à effectuer (SWITCH, L_DET, R_OBj, REDUCE, ...)
+
+- algo arc eager
+  - construit buffer/stack et actions en parsant une phrase
+  - interroge l'oracle pour connaître les actions
+     - apprentissage : l'oracle est le fichier conll parsé, et on fournit (X=features, Y=actions labels) pour trainer le RN
+     - test/inférence: l'oracle est le RN
+
+- RN (MLP)
+  - inputs: one-hots vectors de mots (+ autres features)
+  - hidden 1: glove embeddings + updatés par notre training
+  - outputs: one-hot actions labels 
+
+
+- Rapport (JB: specs + possible):
+
+Un document de 5 pages par groupe
+1	Une description concise et claire de la méthode (pédagogique, concis, clair, bien écrit, sans fautes)
+(JB)
+
+2       Tout détail que vous jugez utile ou important sur l’implémentation (sagacité, étape particulièrement coûteuse, choix d’implémentation particulièrement efficace)
+3       Expériences sur les 4 langues
+a.      Hyperparamètres
+                                               i.          Taille de la couche d’entrée
+                                             ii.          Embeddings ou one-hot vectors
+                                           iii.          Nombre d’epochs
+                                           iv.          Algorithme d’optimisation (sgd, adam…)
+                                             v.          Dropout …
+b.     L’expérience doit être réplicable !! (quelqu’un d’autre doit obtenir les mêmes résultats)
+
+4       Tableau pour les résultats
+ 	FR	NL	EN	JA
+f1	 	 	 	 
+f2	 	 	 	 
+f3	 	 	 	 
+Table 1 : table LAS par langue et par jeu de features
+
+4 Commentaires intelligents un ou deux qui vous semblent intéressant de mettre en avant
+
+5 - aller un peu plus loin sur une langue
+Quelques idées:
+- utilisation (ou pas) d’embeddings pré-entrainés
+- mots inconnus (taux d’erreur, performance ...). Si un mot gourverneur est inconnu, est-ce que les performances sont beaucoup plus basses ou pas ?
+- influence de la taille des données (faut-il avoir les mêmes hyperparamètres, quelle que soit la taille des données d’apprentissage ?)
+- exploiter un nouveau jeu de features ?
+- analyse d’erreur fine (entre langues ?) (ex.: suivant la nature de la dépendance, suivant la langue, suivant le jeu de features, ...)
+- ... autres choses: éventuellement voir avec M.Nasr poru confirmer l’intérêt
