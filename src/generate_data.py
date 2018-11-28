@@ -157,12 +157,12 @@ def convert_x_index(x,vocab,pdd,lemma,morpho,feature):
       x[i][4] = int(x[i][4])
   elif (feature == "f2" or feature == "f3"):
     for i in range(len(x)):
-      x[i][0] = vocab.index(x[i][0])   
-      x[i][1] = pdd.index(x[i][1])
-      x[i][2] = lemma.index(x[i][2])
-      x[i][3] = morpho.index(x[i][3])
-      x[i][4] = pdd.index(x[i][4])
-      x[i][5] = vocab.index(x[i][5])
+      x[i][0] = vocab.index(x[i][0])
+      x[i][1] = vocab.index(x[i][1])
+      x[i][2] = pdd.index(x[i][2])
+      x[i][3] = lemma.index(x[i][3])
+      x[i][4] = morpho.index(x[i][4])
+      x[i][5] = pdd.index(x[i][5])
       x[i][6] = pdd.index(x[i][6])
       x[i][7] = lemma.index(x[i][7])
       x[i][8] = morpho.index(x[i][8])
@@ -204,9 +204,9 @@ def create_vocab(filename):
   dicos = Dicos(mcd)
   mots,pdd,lemma,morpho = dicos.populateFromConlluFile(filename, verbose=False)
   dicos.lock()
-  mots += ["Root"] 
+  mots += ["Root"] + ["N..U..L..L"]
   pdd += ["Root"] + ["N..U..L..L"]
-  lemma += ["Root"]
-  morpho += ["Root"]
+  lemma += ["Root"] + ["N..U..L..L"]
+  morpho += ["Root"] + ["N..U..L..L"]
   
   return mots,pdd,lemma,morpho
