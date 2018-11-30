@@ -1,0 +1,66 @@
+Generating data for lang fr feature f1 phase train
+b'True  :  13385  / False :  1169\r\nProj :  13385\r\n'
+Generating data for lang fr feature f1 phase dev
+b'True  :  1365  / False :  113\r\nProj :  1365\r\n'
+Generating data for lang fr feature f1 phase test
+b'True  :  398  / False :  18\r\nProj :  398\r\n'
+Generating data for lang fr feature f2 phase train
+b'True  :  13385  / False :  1169\r\nProj :  13385\r\n'
+Generating data for lang fr feature f2 phase dev
+b'True  :  1365  / False :  113\r\nProj :  1365\r\n'
+Generating data for lang fr feature f2 phase test
+b'True  :  398  / False :  18\r\nProj :  398\r\n'
+Generating data for lang fr feature f3 phase train
+b'True  :  13385  / False :  1169\r\nProj :  13385\r\n'
+Generating data for lang fr feature f3 phase dev
+b'True  :  1365  / False :  113\r\nProj :  1365\r\n'
+Generating data for lang fr feature f3 phase test
+b'True  :  398  / False :  18\r\nProj :  398\r\n'
+Generating data for lang nl feature f1 phase train
+b'True  :  5457  / False :  332\r\nProj :  5457\r\n'
+Generating data for lang nl feature f1 phase dev
+b'True  :  614  / False :  62\r\nProj :  614\r\n'
+Generating data for lang nl feature f1 phase test
+b'True  :  840  / False :  36\r\nProj :  840\r\n'
+Generating data for lang nl feature f2 phase train
+b'True  :  5457  / False :  332\r\nProj :  5457\r\n'
+Generating data for lang nl feature f2 phase dev
+b'True  :  614  / False :  62\r\nProj :  614\r\n'
+Generating data for lang nl feature f2 phase test
+b'True  :  840  / False :  36\r\nProj :  840\r\n'
+Generating data for lang nl feature f3 phase train
+b'True  :  5457  / False :  332\r\nProj :  5457\r\n'
+Generating data for lang nl feature f3 phase dev
+b'True  :  614  / False :  62\r\nProj :  614\r\n'
+Generating data for lang nl feature f3 phase test
+b'True  :  840  / False :  36\r\nProj :  840\r\n'
+Generating data for lang en feature f1 phase train
+b'True  :  1982  / False :  756\r\nProj :  1982\r\n'
+Generating data for lang en feature f1 phase dev
+b'True  :  637  / False :  275\r\nProj :  637\r\n'
+Generating data for lang en feature f1 phase test
+b'True  :  800  / False :  114\r\nProj :  800\r\n'
+Generating data for lang en feature f2 phase train
+b'True  :  1982  / False :  756\r\nProj :  1982\r\n'
+Generating data for lang en feature f2 phase dev
+b'True  :  637  / False :  275\r\nProj :  637\r\n'
+Generating data for lang en feature f2 phase test
+b'True  :  800  / False :  114\r\nProj :  800\r\n'
+Generating data for lang en feature f3 phase train
+b'True  :  1982  / False :  756\r\nProj :  1982\r\n'
+Generating data for lang en feature f3 phase dev
+b'True  :  637  / False :  275\r\nProj :  637\r\n'
+Generating data for lang en feature f3 phase test
+b'True  :  800  / False :  114\r\nProj :  800\r\n'
+File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-train.conllu
+File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-dev.conllu
+Generating data for lang ja feature f1 phase test
+b'True  :  818  / False :  4\r\nProj :  818\r\n'
+File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-train.conllu
+File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-dev.conllu
+Generating data for lang ja feature f2 phase test
+b'True  :  818  / False :  4\r\nProj :  818\r\n'
+File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-train.conllu
+File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-dev.conllu
+Generating data for lang ja feature f3 phase test
+b'True  :  818  / False :  4\r\nProj :  818\r\n'
