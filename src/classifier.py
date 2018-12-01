@@ -1431,6 +1431,9 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             feat = featureset
             if featureset == 'f1-forms':
                 feat = 'f1'
+            if featureset == 'f1-forms' and lang != 'fr':
+                print("Generating with forms only for fr, skipping...")
+                continue				
             X_train, y_train, vocabs_train = dm.load_data('train', lang, feat)
             X_dev, y_dev, vocabs_dev = dm.load_data('dev', lang, feat)
             X_test, y_test, vocabs_test = dm.load_data('test', lang, feat)
@@ -1455,7 +1458,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
 
             if dep_classifier.get_model_test_status(model_name):
                 print("==> Test conllu file already generated, skipping...")
-                break
+                continue
                 
             t = time.time()
 
