@@ -1254,7 +1254,7 @@ class DependencyClassifier:
                 else:
                     w2_idx = unknown_idx
                     
-                X_test = np.concatenate((w1_idx, w2_idx, cats_pos1, cats_pos2, cats_dist))
+                X_test = np.concatenate(([w1_idx], [w2_idx], cats_pos1, cats_pos2, cats_dist))
             else:
                 X_test = np.concatenate((cats_pos1, cats_pos2, cats_dist))
             
@@ -1295,7 +1295,7 @@ class DependencyClassifier:
             else:
                 l2_idx = unknown_lemma_idx
             # lemmas (embeddings) are set at beginning of inputs
-            X_test = np.concatenate((l1_idx, l2_idx, cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
+            X_test = np.concatenate(([l1_idx], [l2_idx], cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
                                        cat_morpho2, cats_pos4, cats_pos5, cats_dist))
             
         elif featureset == 'f3':
@@ -1337,7 +1337,7 @@ class DependencyClassifier:
             else:
                 l2_idx = unknown_lemma_idx
             # lemmas (embeddings) are set at beginning of inputs
-            X_test = np.concatenate((l1_idx, l2_idx, cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
+            X_test = np.concatenate(([l1_idx], [l2_idx], cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
                                        cat_morpho2, cats_pos4, cats_pos5, cats_pos6, cats_dist))            
             
         X_test = X_test.reshape((1, len(X_test)))
