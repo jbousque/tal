@@ -1006,6 +1006,21 @@ class DependencyClassifier:
         
         if 'POS' in vocabs:
             nb_classes_pos = len(np.unique(vocabs['POS']))
+            print("preprocess_data: merging POS vocabs from dev into train ...")
+            if featureset == 'f1':
+                pos_cols = (2,3)
+            elif featureset == 'f2':
+                pos_cols = (2, 5, 6, 9, 10)
+            else:
+                pos_cols = (2, 5, 6, 9, 10, 11)		
+			
+            self.dm_.merge_vocabs(vocab1=vocabs['POS'], vocab2=vocabs_dev['POS'], data=X_dev, columns=pos_cols)
+            self.models_[model_name]['vocabs']['POS'] = vocabs['POS']
+            # ... vocabs_dev['POS'] is now useless
+            print("preprocess_data: aligning POS vocabs from test into train ...")            
+            # handle test set (align vocabs and set unknown words)
+            self.dm_.merge_vocabs(vocab1=vocabs['POS'], vocab2=vocabs_test['POS'], data=X_test, columns=pos_cols,
+                                 test_mode=True) # !!!			
         if 'MORPHO' in vocabs:
             print("preprocess_data: merging and aligning MORPHO vocabs from dev into train ...")
             self.dm_.merge_vocabs(vocab1=vocabs['MORPHO'], vocab2=vocabs_dev['MORPHO'], data=X_dev, columns=(4, 8))
@@ -1588,7 +1603,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             dep_classifier.remove_network(network_name)
             dep_classifier.remove_model(model_name)
 
-main(epochs=1)
+main(epochs=10)
 
 
 # In[80]:
