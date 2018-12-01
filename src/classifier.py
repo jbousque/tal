@@ -858,7 +858,7 @@ class DependencyClassifier:
         """
         if network_name in self.networks_.keys():
             self.current_network_ = None
-            return self.networks_.pop(model_name, None)    
+            return self.networks_.pop(network_name, None)    
     
     def preprocess_embeddings(self, model_name, augment_vocabs=True):
         """
@@ -917,6 +917,8 @@ class DependencyClassifier:
                 self.embeddings_for_words_, words_not_found, words_matched = self.dm_.align_embeddings(
                     vocabs['WORDS'], self.embeddings_, augment_vocab=augment_vocabs, max_vocab_size=self.MAX_VOCAB_SIZE)
                 self.dm_.safe_pickle_dump(faligned, self.embeddings_for_words_)
+                self.models_[model_name]['vocabs']['WORDS'] = vocabs['WORDS']
+                self.save_model(model_name)
                     
         if self.embeddings_for_lemmas_ is None and featureset is not 'f1':
             faligned = os.path.join(self.path_, 'cache', model_name + '-embeddings-lemmas-aligned.pkl')
@@ -927,6 +929,8 @@ class DependencyClassifier:
                 self.embeddings_for_lemmas_, words_not_found, words_matched = self.dm_.align_embeddings(
                     vocabs['LEMMA'], self.embeddings_, augment_vocab=augment_vocabs, max_vocab_size=self.MAX_VOCAB_SIZE)
                 self.dm_.safe_pickle_dump(faligned, self.embeddings_for_lemmas_)
+                self.models_[model_name]['vocabs']['LEMMA'] = vocabs['LEMMA']
+                self.save_model(model_name)
        
         # free some memory - original embeddings should be useless now
         if self.embeddings_ is not None:
@@ -1394,11 +1398,11 @@ import time
 import generate_data as aegen
 
 
-def main(epochs=10, max_vocab_size=100000, unknown_word='<UNK>'):
+def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
 
     dm = DataManager('../')
     # define a manager with hard limit of 100000 for vocabularies lengths
-    dep_classifier = DependencyClassifier(path='../', max_vocab_size=100000, unknown_word='<UNK>')
+    dep_classifier = DependencyClassifier(path='../', max_vocab_size=50000, unknown_word='<UNK>')
     
     test_info = {'fr': os.path.join("..", "UD_French-GSD", "fr_gsd-ud-test.conllu"),       
                  'nl' : os.path.join("..", "UD_Dutch-LassySmall", "nl_lassysmall-ud-test.conllu") ,              
@@ -1574,8 +1578,8 @@ def main(epochs=10, max_vocab_size=100000, unknown_word='<UNK>'):
                 dep_classifier.set_model_test_done(model_name)
                 dep_classifier.save_model(model_name)
                 
-            #dep_classifier.remove_network(network_name)
-            #dep_classifier.remove_model(model_name)
+            dep_classifier.remove_network(network_name)
+            dep_classifier.remove_model(model_name)
 
 main(epochs=1)
 
@@ -1590,8 +1594,8 @@ lang='fr'
 featureset='f1-forms'
 
 dm = DataManager('../')
-# define a manager with hard limit of 100000 for vocabularies lengths
-dep_classifier = DependencyClassifier(path='../', max_vocab_size=100000, unknown_word='<UNK>')
+# define a manager with hard limit of 50000 for vocabularies lengths
+dep_classifier = DependencyClassifier(path='../', max_vocab_size=50000, unknown_word='<UNK>')
 
 print("= Loading data...")
 feat = featureset
