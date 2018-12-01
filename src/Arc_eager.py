@@ -147,6 +147,10 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
     stack_done = []
     buffer_done = []
 
+
+    stack_before_pos = None
+    buffer_before_pos = None
+    buffer_after_pos = None
     while ((len(buffer) != 0) and (len(stack) != 0)):
 
         if (stack[len(stack) - 1] == root):
@@ -157,31 +161,6 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
             dist = abs(phrase.index(stack[len(stack) - 1]) - phrase.index(buffer[0]))
 
         if dist > 7: dist = 7
-
-        if oracle_ == None:
-            Y_actu, gold = oracle(stack[len(stack) - 1], buffer[0], phrase,couples,tab_head)
-        else :
-            Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle_,proj)
-        if phrase_all != None :
-            if "RIGHT" in Y_actu or "LEFT" in Y_actu :
-                gov_lab = Y_actu.split("_")
-                gov = gov_lab[0]
-                lab = gov_lab[1]
-                index1 = phrase.index(stack[len(stack) - 1])
-                index2 = phrase.index(buffer[0])
-
-                if "RIGHT" in gov :
-                    all_index = [ i[0] for i in phrase_all ]
-                    index_encours = all_index.index(str(index2))
-                    phrase_all[index_encours][6] = index1# GOV
-                    phrase_all[index_encours][7] =  lab# Lab
-                if "LEFT" in gov :
-                    all_index = [ i[0] for i in phrase_all ]
-                    index_encours = all_index.index(str(index1))
-                    phrase_all[index_encours][6] = index2  # GOV
-                    phrase_all[index_encours][7] = lab  # Lab
-
-
 
         if (feature == "f1"):
             X.append([stack[len(stack) - 1][0],  # FORM mot 1
@@ -252,6 +231,33 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
                       buffer_before_pos,
                       buffer_after_pos,
                       dist])
+
+
+        if oracle_ == None:
+            Y_actu, gold = oracle(stack[len(stack) - 1], buffer[0], phrase,couples,tab_head)
+        else :
+            Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle_,proj,stack_before_pos,buffer_before_pos,buffer_after_pos)
+        if phrase_all != None :
+            if "RIGHT" in Y_actu or "LEFT" in Y_actu :
+                gov_lab = Y_actu.split("_")
+                gov = gov_lab[0]
+                lab = gov_lab[1]
+                index1 = phrase.index(stack[len(stack) - 1])
+                index2 = phrase.index(buffer[0])
+
+                if "RIGHT" in gov :
+                    all_index = [ i[0] for i in phrase_all ]
+                    index_encours = all_index.index(str(index2))
+                    phrase_all[index_encours][6] = index1# GOV
+                    phrase_all[index_encours][7] =  lab# Lab
+                if "LEFT" in gov :
+                    all_index = [ i[0] for i in phrase_all ]
+                    index_encours = all_index.index(str(index1))
+                    phrase_all[index_encours][6] = index2  # GOV
+                    phrase_all[index_encours][7] = lab  # Lab
+
+
+
 
 
         Y.append(Y_actu)
@@ -362,7 +368,7 @@ def is_proj(couple):
 
     return True
 
-def oracle_test(w1, w2 ,dist, oracle,proj):
+def oracle_test(w1, w2 ,dist, oracle,proj,stack_before_pos,buffer_before_pos,buffer_after_pos):
     """
 
     :param w1: mot stack 
@@ -401,9 +407,24 @@ def oracle_test(w1, w2 ,dist, oracle,proj):
         X_test_i = oracle.process_test_data(x_test)
         X_test_i.append(proj_int)
 
-
     elif featureset == 'f2':
-        pass
+        # FORM , POS , GOV , LABEL, LEMMA , MORPHO
+        x_test = []
+        x_test.append(w1[0])  # FORM 1
+        x_test.append(w2[0])  # FORM 2
+        x_test.append(w1[1])  # POS 1
+        x_test.append(w1[4])  # LEMMA 1
+        x_test.append(w1[5])  # MORPHO 1
+        x_test.append(stack_before_pos) # S.-1 POS
+        x_test.append(w2[1])  # POS 2
+        x_test.append(w2[4])  # LEMMA 2
+        x_test.append(w2[5])  # MORPHO 2
+        x_test.append(buffer_before_pos)# B.-1 POS
+        x_test.append(buffer_after_pos)  # B.1 POS
+        x_test.append(dist)  # DIST
+
+        X_test_i = oracle.process_test_data(x_test)
+        X_test_i.append(proj_int)
 
     # Prédiction
     y_pred = keras_model.predict(X_test_i)
