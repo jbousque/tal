@@ -29,20 +29,25 @@ def reduce(stack):
     return stack
 
 
-def oracle(w1, w2, phrase, couples):
+def oracle(w1, w2, phrase, couples,tab_head):
+    """
 
+    :param w1: Mot du stack
+    :param w2: mot du buffer
+    :param phrase: Liste de mots
+    :param couples: Liste de couple ( x , y )
+    :return:
+    """
 
     if (int(w2[2]) == phrase.index(w1)):
-        if erreur: print("ajout de :", w2)
         return "RIGHT_" + str(w2[3]), 2
 
     elif (int(w1[2]) == phrase.index(w2)):
 
-        if erreur: print(w1, " ", w2)
         return "LEFT_" + str(w1[3]), 1
 
     elif (w1 in tab_head):
-        if (verif_reduce(phrase.index(w1), phrase.index(w2), couples, len(phrase) - 1, erreur)):
+        if (verif_reduce(phrase.index(w1), phrase.index(w2), couples, len(phrase) - 1)):
             return "REDUCE", 4
         else:
             return "SHIFT", 3
@@ -51,13 +56,12 @@ def oracle(w1, w2, phrase, couples):
         return "SHIFT", 3
 
 
-def verif_reduce(index, index2, couples, taille, erreur):  ## A OPTIMISER
+def verif_reduce(index, index2, couples, taille):  ## A OPTIMISER
+
     possible = []
     for i in range(index2, taille + 1):
         possible.append((index, i))
     for (a, b) in possible:
-        if (erreur): print((a, b))
-        # print((a,b))
         if (a, b) in couples: return False
 
     return True
@@ -83,7 +87,18 @@ def get_need(phrase):
     return need
 
 
-def parser(phrase, feature, erreur,phrase_all=None,oracle_=None):
+def parser(phrase, feature,phrase_all=None,oracle_=None):
+    """
+
+    :param phrase: Liste de mots sous forme de tokens ( Spécifique au features )
+    :param feature: Feature utilisé ( f1 | f2 | f3 )
+    :param phrase_all:  Liste de mots sous forme de tokens ( Tout les tokens )
+    :param oracle_: Utilisation du réseau ou non
+    :return: arcs : Liste des arcs créée par le parser
+    :return: X : Liste des X ( Spécifique au features )
+    :return: Y : Liste des Y
+    :return: phrase_all : Nouvelle liste de mots avec modifications du GOV et LABEL
+    """
     couples = get_couple(phrase)
     tab_head = []
     buffer = phrase
@@ -144,7 +159,7 @@ def parser(phrase, feature, erreur,phrase_all=None,oracle_=None):
         if dist > 7: dist = 7
 
         if oracle_ == None:
-            Y_actu, gold = oracle(stack[len(stack) - 1], buffer[0], phrase,couples)
+            Y_actu, gold = oracle(stack[len(stack) - 1], buffer[0], phrase,couples,tab_head)
         else :
             Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle_ )
         if phrase_all != None :
@@ -290,6 +305,11 @@ def parser(phrase, feature, erreur,phrase_all=None,oracle_=None):
 
 
 def get_couple(phrase):
+    """
+
+    :param phrase: Liste de mots sous forme de tokens
+    :return: Liste de couple ( x , y )
+    """
     couple = []
     for i in range(len(phrase)):
         couple.append((int(phrase[i][2]), i + 1))
@@ -297,7 +317,12 @@ def get_couple(phrase):
     return couple
 
 
-def is_proj(couple, taille):
+def is_proj(couple):
+    """
+
+    :param couple: Liste de couple ( x , y )
+    :return: True si la liste est project , False sinon
+    """
     for (x, y) in couple:
         for (x1, y1) in couple:
             # print((x,y),' ',(x1,y1))
