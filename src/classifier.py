@@ -997,6 +997,7 @@ class DependencyClassifier:
         if use_forms:
             print("preprocess_data: merging WORDS vocabs from dev into train ...")
             self.dm_.merge_vocabs(vocab1=vocabs['WORDS'], vocab2=vocabs_dev['WORDS'], data=X_dev, columns=(0, 1))
+            self.models_[model_name]['vocabs']['WORDS'] = vocabs['WORDS']
             # ... vocabs_dev['WORDS'] is now useless
             print("preprocess_data: aligning WORDS vocabs from test into train ...")            
             # handle test set (align vocabs and set unknown words)
@@ -1008,6 +1009,7 @@ class DependencyClassifier:
         if 'MORPHO' in vocabs:
             print("preprocess_data: merging and aligning MORPHO vocabs from dev into train ...")
             self.dm_.merge_vocabs(vocab1=vocabs['MORPHO'], vocab2=vocabs_dev['MORPHO'], data=X_dev, columns=(4, 8))
+            self.models_[model_name]['vocabs']['MORPHO'] = vocabs['MORPHO']
             # ... vocabs_dev['MORPHO'] is now useless
             nb_classes_morpho = len(np.unique(vocabs['MORPHO']))
             print("preprocess_data: aligning MORPHO vocabs from test into train ...")
@@ -1017,6 +1019,7 @@ class DependencyClassifier:
         if 'LEMMA' in vocabs:
             print("preprocess_data: merging and aligning LEMMA vocabs from dev into train ...")
             self.dm_.merge_vocabs(vocab1=vocabs['LEMMA'], vocab2=vocabs_dev['LEMMA'], data=X_dev, columns=(3, 7))
+            self.models_[model_name]['vocabs']['LEMMA'] = vocabs['LEMMA']
             # ... vocabs_dev['LEMMA'] is now useless            
             print("preprocess_data: aligning LEMMA vocabs from test into train ...")
             self.dm_.merge_vocabs(vocab1=vocabs['LEMMA'], vocab2=vocabs_test['LEMMA'], data=X_test, columns=(3, 7),
@@ -1024,6 +1027,7 @@ class DependencyClassifier:
 
         print("preprocess_data: merging and aligning LABEL vocabs from dev into train ...")
         self.dm_.merge_vocabs(vocab1=vocabs['LABELS'], vocab2=vocabs_dev['LABELS'], data=y_dev, columns=(0,))
+        self.models_[model_name]['vocabs']['LABELS'] = vocabs['LABELS']
         print("preprocess_data: merging and aligning LABEL vocabs from test into train ...")
         self.dm_.merge_vocabs(vocab1=vocabs['LABELS'], vocab2=vocabs_test['LABELS'], data=y_test, columns=(0,),
                              test_mode=True) # there should be no UNK in this vocab !
@@ -1491,7 +1495,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
                                                                                 X_train, y_train, 
                                                                                 X_dev, y_dev, 
                                                                                 X_test, y_test)
-
+            dep_classifier.save_model(model_name) # needed if vocabs were augmented
             print("  ... preprocessed data in ", time.time() - t)
             """print("x_train", X_train[idx_train])
             print("y_train", y_train[idx_train])
