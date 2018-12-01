@@ -1243,10 +1243,10 @@ class DependencyClassifier:
             unknown_idx = vocabs['WORDS'].index(self.UNKNOWN_WORD)
         if 'LEMMA' in vocabs.keys():
             if self.UNKNOWN_WORD in vocabs['LEMMA']:
-                unknown_lemma_idx = vocabs['LEMMA'].index(self.UNKNOWN_WORLD)
+                unknown_lemma_idx = vocabs['LEMMA'].index(self.UNKNOWN_WORD)
         if 'MORPHO' in vocabs.keys():
             if self.UNKNOWN_WORD in vocabs['MORPHO']:
-                unknown_morpho_idx = vocabs['MORPHO'].index(self.UNKNOWN_WORLD)
+                unknown_morpho_idx = vocabs['MORPHO'].index(self.UNKNOWN_WORD)
         
         # align to vocabs indices (the ones known by the keras network)
         if featureset == 'f1':
