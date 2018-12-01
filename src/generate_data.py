@@ -4,6 +4,12 @@ from Dicos import *
 from Arc_eager import *
 import numpy as np
 def get_data(filename,feature):
+  """
+
+  :param filename: Nom du fichier conllu
+  :param feature: feature utilisé
+  :return: X , Y
+  """
   try:
     conlluFile = open(filename, encoding='utf-8')
   except IOError:
@@ -25,14 +31,14 @@ def get_data(filename,feature):
       pa = copy.copy(phrase)
       
       transition = get_couple(phrase)
-      proj = is_proj(transition,len(phrase))
+      proj = is_proj(transition)
       #print("proj" if proj else "non proj")
       
       if proj : count_proj += 1 
       
       couple = verif_arcs(phrase,feature)
       
-      arcs,x,y = parser(phrase,feature,False)
+      arcs,x,y = parser(phrase,feature)
       if proj :
         for z in x:
           z += [1]
@@ -41,46 +47,12 @@ def get_data(filename,feature):
           z += [0]
       X += x
       Y += y
-      '''
-      print(pa)
-      print()
-      print(arcs)
-      print
-      print(couple)
-      print(verif_couple(couple,arcs))
-      sys.exit("Error message")
-      '''
 
       if ( not verif_couple(couple,arcs) ):
         fa += 1
-       
-        if ( proj ):
-
-          print("proj" if proj else "non proj")
-          print()
-          print(pa)
-          print(arcs)
-          print(couple)
-          print()
-          
-          dif = []
-          for c in couple:
-            if c not in arcs:
-              dif.append(c)
-          print(dif)
-          
-          arcs,x,y = parser(pa,feature,True)
-          sys.exit("Error message")
-
       else :
         go += 1
-        #print()
-        #print(pa)
-        #print(arcs)
-        #print(couple)
-        #print(couple)
-        #print(arcs)
-        #sys.exit("Error message")
+
    
       phrase = []
       
@@ -88,9 +60,6 @@ def get_data(filename,feature):
     
     if ligne[0] != '\n' and ligne[0] != '#' :
       tokens = ligne.split("\t")
-      #for i in range(0, len(tokens)):
-      #print(tokens[6])
-      #print(tokens)
       if ( "-" not in tokens[0]):
         if ( feature == "f1"):
         # FORM , POS , GOV , LABEL
@@ -101,13 +70,19 @@ def get_data(filename,feature):
         index += 1
        
   print("True  : ",go , " / False : " , fa)
-  #sys.exit("Error message")
   print("Proj : ", count_proj)
-  #sys.exit("Error message")
   return X,Y
 
 
 def create_conllu(filename, feature,result_name,oracle_=None):
+  """
+
+  :param filename: Nom du fichier conllu
+  :param feature:  Feature utilisé
+  :param result_name: Nom du fichier conllu resultant
+  :param oracle_: Utilisation du reseau ou non
+  :return: Créer le fichier conllu ( result_name )
+  """
   try:
     conlluFile = open(filename, encoding='utf-8')
   except IOError:
@@ -129,7 +104,7 @@ def create_conllu(filename, feature,result_name,oracle_=None):
     if ligne[0] == '\n':  # Nouvelle phrase
       index = 0
 
-      arcs, x, y ,phrase_all = parser(phrase, feature, False,phrase_all=phrase_all,oracle=oracle_)
+      arcs, x, y ,phrase_all = parser(phrase, feature,phrase_all=phrase_all,oracle_=oracle_)
 
       for tok in phrase_all:
           result_conllu.write("\t".join(str(x) for x in tok))
