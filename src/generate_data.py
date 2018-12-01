@@ -74,7 +74,7 @@ def get_data(filename,feature):
   return X,Y
 
 
-def create_conllu(filename, feature,result_name,oracle=None):
+def create_conllu(filename, feature,result_name,oracle_=None):
   """
 
   :param filename: Nom du fichier conllu
@@ -108,7 +108,7 @@ def create_conllu(filename, feature,result_name,oracle=None):
     if ligne[0] == '\n':  # Nouvelle phrase
       index = 0
 
-      arcs, x, y ,phrase_all = parser(phrase, feature,proj,phrase_all=phrase_all,oracle=oracle)
+      arcs, x, y ,phrase_all = parser(phrase, feature,proj,phrase_all=phrase_all,oracle_=oracle_)
 
       for tok in phrase_all:
           result_conllu.write("\t".join(str(x) for x in tok))

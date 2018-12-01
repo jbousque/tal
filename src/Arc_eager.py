@@ -87,7 +87,7 @@ def get_need(phrase):
     return need
 
 
-def parser(phrase, feature,proj,phrase_all=None,oracle=None):
+def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
     """
 
     :param phrase: Liste de mots sous forme de tokens ( Spécifique au features )
@@ -255,10 +255,10 @@ def parser(phrase, feature,proj,phrase_all=None,oracle=None):
                       dist])
 
 
-        if oracle == None:
+        if oracle_ == None:
             Y_actu, gold = oracle(stack[len(stack) - 1], buffer[0], phrase,couples,tab_head)
         else :
-            Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle,proj,stack_before_pos,buffer_before_before_pos,buffer_before_pos,buffer_after_pos)
+            Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle_,proj,stack_before_pos,buffer_before_before_pos,buffer_before_pos,buffer_after_pos)
         if phrase_all != None :
             if "RIGHT" in Y_actu or "LEFT" in Y_actu :
                 gov_lab = Y_actu.split("_")
