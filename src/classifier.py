@@ -1300,7 +1300,7 @@ class DependencyClassifier:
             cats_morpho2 = to_categorical(m_idx, num_classes=nb_classes_morpho)
             cats_pos4    = to_categorical(vocabs['POS'].index(X_test[9]), num_classes=nb_classes_pos)
             cats_pos5    = to_categorical(vocabs['POS'].index(X_test[10]), num_classes=nb_classes_pos)
-            cats_dist    = to_categorical(np.abs(X_train[11]), num_classes=nb_classes_dist)
+            cats_dist    = to_categorical(np.abs(X_test[11]), num_classes=nb_classes_dist)
             if X_test[3] in vocabs['LEMMA']:
                 l1_idx = vocabs['LEMMA'].index(X_test[3])
             else:
@@ -1312,7 +1312,7 @@ class DependencyClassifier:
             # lemmas (embeddings) are set at beginning of inputs
             X_test = [np.array(l1_idx).reshape(1,1), np.array(l2_idx).reshape(1,1), 
                       np.concatenate(( cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
-                      cats_morpho2, cats_pos4, cats_pos5, cats_dist)).reshape(1,len(vocabs['POS']) * 4  + len(vocabs['MORPHO']) * 2 + 8) ]
+                      cats_morpho2, cats_pos4, cats_pos5, cats_dist)).reshape(1,len(vocabs['POS']) * 5  + len(vocabs['MORPHO']) * 2 + 8) ]
             
         elif featureset == 'f3':
             """ 
@@ -1343,7 +1343,7 @@ class DependencyClassifier:
             cats_pos4    = to_categorical(vocabs['POS'].index(X_test[9]), num_classes=nb_classes_pos)
             cats_pos5    = to_categorical(vocabs['POS'].index(X_test[10]), num_classes=nb_classes_pos)
             cats_pos6    = to_categorical(vocabs['POS'].index(X_test[11]), num_classes=nb_classes_pos)
-            cats_dist    = to_categorical(np.abs(X_train[12]), num_classes=nb_classes_dist)
+            cats_dist    = to_categorical(np.abs(X_test[12]), num_classes=nb_classes_dist)
             if X_test[3] in vocabs['LEMMA']:
                 l1_idx = vocabs['LEMMA'].index(X_test[3])
             else:
@@ -1354,7 +1354,7 @@ class DependencyClassifier:
                 l2_idx = unknown_lemma_idx
             # lemmas (embeddings) are set at beginning of inputs
             X_test = [np.array(l1_idx).reshape(1,1), np.array(l2_idx).reshape(1,1), np.concatenate((cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
-                                       cats_morpho2, cats_pos4, cats_pos5, cats_pos6, cats_dist)).reshape(1,len(vocabs['POS']) * 5  + len(vocabs['MORPHO']) * 2 + 8) ]         
+                                       cats_morpho2, cats_pos4, cats_pos5, cats_pos6, cats_dist)).reshape(1,len(vocabs['POS']) * 6  + len(vocabs['MORPHO']) * 2 + 8) ]         
             
         #X_test = np.expand_dims(X_test, axis=0) # np.array(X_test).reshape((1, len(X_test)))
         #print("process_test_data ->", X_test)
