@@ -839,7 +839,8 @@ class DependencyClassifier:
             except Exception as e:
                 print("Could not load keras model because ", str(e))
                 return False
-        
+        else:
+            print("   not a file or not readable", fname)
         return False
     
     def get_network(self, network_name):
