@@ -1275,7 +1275,7 @@ class DependencyClassifier:
                 X_test = [ np.array(w1_idx).reshape(1,1), np.array(w2_idx).reshape(1,1), 
                 np.concatenate((cats_pos1, cats_pos2, cats_dist)).reshape(1,len(vocabs['POS']) * 2 + 8) ]
             else:
-                X_test = np.concatenate((cats_pos1, cats_pos2, cats_dist))
+                X_test = np.concatenate((cats_pos1, cats_pos2, cats_dist)).reshape(1, len(vocabs['POS']) * 2 + 8)
             
         elif featureset == 'f2':
             """ 
