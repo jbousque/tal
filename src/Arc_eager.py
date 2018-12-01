@@ -141,16 +141,30 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
                   mot_null,
                   buffer[0][1],
                   0])
+    if (feature == "f3"):
+        X.append([mot_null,  # FORM mot 1
+                  root,  # FORM mot 2
+                  mot_null,  # POS mot 1
+                  mot_null,  # LEMMA mot 1
+                  mot_null,  # MORPHO mot 1
+                  mot_null,  # POS mot 1
+                  root,  # POS mot 2
+                  root,  # LEMMA mot 2
+                  root,  # MORPHO mot 2
+                  mot_null,
+                  mot_null,
+                  buffer[0][1],
+                  0])
     Y.append("SHIFT")
 
     # Début du parcours du buffer / stack
     stack_done = []
     buffer_done = []
 
-
     stack_before_pos = None
     buffer_before_pos = None
     buffer_after_pos = None
+    buffer_before_before_pos = None
     while ((len(buffer) != 0) and (len(stack) != 0)):
 
         if (stack[len(stack) - 1] == root):
@@ -202,15 +216,22 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
                       dist])
         if (feature == "f3"):
 
-            if (len(stack) >= 2):
-                stack_after_pos = stack[len(stack) - 2][1]
+            if (len(stack_done) >= 1):
+                stack_before_pos = stack_done[len(stack_done) - 1]
             else:
-                stack_after_pos = "N..U..L..L"
+                stack_before_pos = "N..U..L..L"
+
+            stack_done.append(stack[len(stack) - 1][1])
 
             if (len(buffer_done) >= 1):
                 buffer_before_pos = buffer_done[len(buffer_done) - 1]
             else:
                 buffer_before_pos = "N..U..L..L"
+
+            if (len(buffer_done) >= 2):
+                buffer_before__before_pos = buffer_done[len(buffer_done) - 2]
+            else:
+                buffer_before__before_pos = "N..U..L..L"
 
             buffer_done.append(buffer[0][1])
 
@@ -224,19 +245,20 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
                       stack[len(stack) - 1][1],  # POS mot 1
                       stack[len(stack) - 1][4],  # LEMMA mot 1
                       stack[len(stack) - 1][5],  # MORPHO mot 1
-                      stack_after_pos,  # POS mot   1
+                      stack_before_pos,  # POS mot -1
                       buffer[0][1],  # POS mot 2
                       buffer[0][4],  # LEMMA mot 2
                       buffer[0][5],  # MORPHO mot 2
-                      buffer_before_pos,
-                      buffer_after_pos,
+                      buffer_before__before_pos,  # b-2
+                      buffer_before_pos, # b-1
+                      buffer_after_pos, #b1
                       dist])
 
 
         if oracle_ == None:
             Y_actu, gold = oracle(stack[len(stack) - 1], buffer[0], phrase,couples,tab_head)
         else :
-            Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle_,proj,stack_before_pos,buffer_before_pos,buffer_after_pos)
+            Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle_,proj,stack_before_pos,buffer_before_before_pos,buffer_before_pos,buffer_after_pos)
         if phrase_all != None :
             if "RIGHT" in Y_actu or "LEFT" in Y_actu :
                 gov_lab = Y_actu.split("_")
@@ -300,6 +322,25 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
                    mot_null,
                    mot_null,
                    0])
+       if (feature == "f3"):
+           if (i == 0):
+               stack_before_pos = stack_done[len(stack_done) - 1]
+           else:
+               stack_before_pos = stack[j + 1][1]
+
+           X.append([stack[j][0],  # FORM mot 1
+                     mot_null,  # FORM mot 2
+                     stack[j][1],  # POS mot 1
+                     stack[j][4],  # LEMMA mot 1
+                     stack[j][5],  # MORPHO mot 1
+                     stack_before_pos,  # POS mot -1
+                     mot_null,  # POS mot 2
+                     mot_null,  # LEMMA mot 2
+                     mot_null,  # MORPHO mot 2
+                     mot_null,
+                     mot_null,
+                     mot_null,
+                     0])
        Y.append("REDUCE")
 
 
@@ -368,7 +409,7 @@ def is_proj(couple):
 
     return True
 
-def oracle_test(w1, w2 ,dist, oracle,proj,stack_before_pos,buffer_before_pos,buffer_after_pos):
+def oracle_test(w1, w2 ,dist, oracle,proj,stack_before_pos,buffer_before_before_pos,buffer_before_pos,buffer_after_pos):
     """
 
     :param w1: mot stack 
@@ -420,6 +461,23 @@ def oracle_test(w1, w2 ,dist, oracle,proj,stack_before_pos,buffer_before_pos,buf
         x_test.append(w2[4])  # LEMMA 2
         x_test.append(w2[5])  # MORPHO 2
         x_test.append(buffer_before_pos)# B.-1 POS
+        x_test.append(buffer_after_pos)  # B.1 POS
+        x_test.append(dist)  # DIST
+
+    elif featureset == 'f3':
+        # FORM , POS , GOV , LABEL, LEMMA , MORPHO
+        x_test = []
+        x_test.append(w1[0])  # FORM 1
+        x_test.append(w2[0])  # FORM 2
+        x_test.append(w1[1])  # POS 1
+        x_test.append(w1[4])  # LEMMA 1
+        x_test.append(w1[5])  # MORPHO 1
+        x_test.append(stack_before_pos)  # S.-1 POS
+        x_test.append(w2[1])  # POS 2
+        x_test.append(w2[4])  # LEMMA 2
+        x_test.append(w2[5])  # MORPHO 2
+        x_test.append(buffer_before_before_pos)  # B.-2 POS
+        x_test.append(buffer_before_pos)  # B.-1 POS
         x_test.append(buffer_after_pos)  # B.1 POS
         x_test.append(dist)  # DIST
 

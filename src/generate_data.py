@@ -193,7 +193,7 @@ def convert_x_index(x,vocab,pdd,lemma,morpho,feature):
       x[i][2] = pdd.index(x[i][2])
       x[i][3] = pdd.index(x[i][3])
       x[i][4] = int(x[i][4])
-  elif (feature == "f2" or feature == "f3"):
+  elif feature == "f2":
     for i in range(len(x)):
       x[i][0] = vocab.index(x[i][0])
       x[i][1] = vocab.index(x[i][1])
@@ -207,6 +207,21 @@ def convert_x_index(x,vocab,pdd,lemma,morpho,feature):
       x[i][9] = pdd.index(x[i][9])
       x[i][10] = pdd.index(x[i][10])
       x[i][11] = int(x[i][11])
+  elif feature == "f3":
+    for i in range(len(x)):
+      x[i][0] = vocab.index(x[i][0])
+      x[i][1] = vocab.index(x[i][1])
+      x[i][2] = pdd.index(x[i][2])
+      x[i][3] = lemma.index(x[i][3])
+      x[i][4] = morpho.index(x[i][4])
+      x[i][5] = pdd.index(x[i][5])
+      x[i][6] = pdd.index(x[i][6])
+      x[i][7] = lemma.index(x[i][7])
+      x[i][8] = morpho.index(x[i][8])
+      x[i][9] = pdd.index(x[i][9])
+      x[i][10] = pdd.index(x[i][10])
+      x[i][11] = pdd.index(x[i][11])
+      x[i][12] = int(x[i][12])
   return x
 
 def convert_y_index(y,vocab):
