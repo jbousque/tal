@@ -38,7 +38,7 @@ def get_data(filename,feature):
       
       couple = verif_arcs(phrase,feature)
       
-      arcs,x,y = parser(phrase,feature)
+      arcs,x,y = parser(phrase,feature,proj)
       if proj :
         for z in x:
           z += [1]
@@ -95,16 +95,20 @@ def create_conllu(filename, feature,result_name,oracle_=None):
   X = []
   Y = []
 
+  transition = get_couple(phrase)
+  proj = is_proj(transition)
   go = 0
   fa = 0
 
   count_proj = 0
   index = 0
+
+
   for ligne in conlluFile:
     if ligne[0] == '\n':  # Nouvelle phrase
       index = 0
 
-      arcs, x, y ,phrase_all = parser(phrase, feature,phrase_all=phrase_all,oracle_=oracle_)
+      arcs, x, y ,phrase_all = parser(phrase, feature,proj,phrase_all=phrase_all,oracle_=oracle_)
 
       for tok in phrase_all:
           result_conllu.write("\t".join(str(x) for x in tok))

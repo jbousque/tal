@@ -87,7 +87,7 @@ def get_need(phrase):
     return need
 
 
-def parser(phrase, feature,phrase_all=None,oracle_=None):
+def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
     """
 
     :param phrase: Liste de mots sous forme de tokens ( Spécifique au features )
@@ -161,7 +161,7 @@ def parser(phrase, feature,phrase_all=None,oracle_=None):
         if oracle_ == None:
             Y_actu, gold = oracle(stack[len(stack) - 1], buffer[0], phrase,couples,tab_head)
         else :
-            Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle_ )
+            Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle_,proj)
         if phrase_all != None :
             if "RIGHT" in Y_actu or "LEFT" in Y_actu :
                 gov_lab = Y_actu.split("_")
@@ -362,7 +362,7 @@ def is_proj(couple):
 
     return True
 
-def oracle_test(w1, w2 ,dist, model):
+def oracle_test(w1, w2 ,dist, oracle,proj):
     """
 
     :param w1: mot stack 
@@ -370,20 +370,61 @@ def oracle_test(w1, w2 ,dist, model):
               feature2 => w2[FORM , POS , GOV , LABEL, LEMMA , MORPHO]
     :param w2: mot buffer
     :param dist: distance entre w1 et w2 
-    :param model:
+    :param oracle:
+
 
     :return: y : prediction convertie par rapport au vocab ( ex : RIGHT_det )
     :return: gold : 1 = left / 2 = right / 3 = shift / 4 = reduce
     """
 
+    if proj : proj_int = 1
+    else : proj_int = 0
+    keras_model = oracle.get_current_network()
+
+    model = oracle.get_current_model()
+    featureset = model['featureset']
+    labels = oracle.get_labels_vocab()
+
+    X_test_i = []
+    gold = 0
+
 
     # Convertir les donnnées
+    if featureset == 'f1':
 
+        x_test = []
+        x_test.append(w1[0])  # FORM 1
+        x_test.append(w2[0])  # FORM 2
+        x_test.append(w1[1])  # POS 1
+        x_test.append(w2[1])  # POS 2
+        x_test.append(dist)  # DIST
+
+        X_test_i = oracle.process_test_data(x_test)
+        X_test_i.append(proj_int)
+
+
+    elif featureset == 'f2':
+        # ...
+        pass
+    else:
+        # ...
+        pass
 
     # Prédiction
+    y_pred = keras_model.predict(X_test_i)
 
 
     # Convertir la précition
 
+    y = labels[y_pred]
+
+    if "LEFT" in y:
+        gold = 1
+    if "RIGHT" in y:
+        gold = 2
+    if "SHIFT" in y:
+        gold = 3
+    if "REDUCE" in y:
+        gold = 4
 
     return y , gold
