@@ -151,7 +151,8 @@ def load_conllu(file):
             # Add parent UDWord links and check there are no cycles
             def process_word(word):
                 if word.parent == "remapping":
-                    raise UDError("There is a cycle in a sentence")
+                    pass
+                    #raise UDError("There is a cycle in a sentence")
                 if word.parent is None:
                     head = int(word.columns[HEAD])
                     if head > len(ud.words) - sentence_start:
@@ -167,8 +168,8 @@ def load_conllu(file):
 
             # Check there is a single root node
             if len([word for word in ud.words[sentence_start:] if word.parent is None]) != 1:
-                raise UDError("There are multiple roots in a sentence")
-
+                #raise UDError("There are multiple roots in a sentence")
+                pass
             # End the sentence
             ud.sentences[-1].end = index
             sentence_start = None

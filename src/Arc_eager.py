@@ -115,7 +115,7 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
     if phrase_all != None :
         for i in range(len(phrase_all)):
             if ("-" not in phrase_all[i][0]):
-                #phrase_all[i][6] = index_root  # GOV
+                phrase_all[i][6] = 0  # GOV
                 phrase_all[i][7] = "_"  # Lab
     X = []
     Y = []
