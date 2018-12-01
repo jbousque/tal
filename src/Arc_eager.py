@@ -161,10 +161,10 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
     stack_done = []
     buffer_done = []
 
-    stack_before_pos = None
-    buffer_before_pos = None
-    buffer_after_pos = None
-    buffer_before_before_pos = None
+    stack_before_pos = "N..U..L..L"
+    buffer_before_pos = "N..U..L..L"
+    buffer_after_pos = "N..U..L..L"
+    buffer_before_before_pos = "N..U..L..L"
     while ((len(buffer) != 0) and (len(stack) != 0)):
 
         if (stack[len(stack) - 1] == root):
