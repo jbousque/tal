@@ -446,7 +446,7 @@ def oracle_test(w1, w2 ,dist, oracle,proj,stack_before_pos,buffer_before_before_
         x_test.append(dist)  # DIST
 
         X_test_i = oracle.process_test_data(x_test)
-        X_test_i.append(proj_int)
+        #X_test_i.append(proj_int)
 
     elif featureset == 'f2':
         # FORM , POS , GOV , LABEL, LEMMA , MORPHO
@@ -463,6 +463,8 @@ def oracle_test(w1, w2 ,dist, oracle,proj,stack_before_pos,buffer_before_before_
         x_test.append(buffer_before_pos)# B.-1 POS
         x_test.append(buffer_after_pos)  # B.1 POS
         x_test.append(dist)  # DIST
+		
+		X_test_i = oracle.process_test_data(x_test)
 
     elif featureset == 'f3':
         # FORM , POS , GOV , LABEL, LEMMA , MORPHO
@@ -482,7 +484,7 @@ def oracle_test(w1, w2 ,dist, oracle,proj,stack_before_pos,buffer_before_before_
         x_test.append(dist)  # DIST
 
         X_test_i = oracle.process_test_data(x_test)
-        X_test_i.append(proj_int)
+        #X_test_i.append(proj_int)
 
     # Prédiction
     y_pred = keras_model.predict(X_test_i)
