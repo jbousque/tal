@@ -900,11 +900,6 @@ class DependencyClassifier:
         """model f1_fr ,augment True ,f f1 ,forms False ,lang fr )"""
         
         if (self.embeddings_for_words_ is None and use_forms) or (self.embeddings_for_lemmas_ is None and featureset != 'f1'):
-            print("self.embeddings_for_words_ is None", self.embeddings_for_words_ is None)
-            print("use_forms", use_forms)
-            print("self.embeddings_for_lemmas_ is None",self.embeddings_for_lemmas_ is None)
-            print("featureset is not 'f1'",featureset is not 'f1')
-            print("featureset == 'f1'", featureset == 'f1')
             if self.embeddings_ is None:
                 print("preprocess_embeddings: loading original embeddings ...")
                 self.embeddings_, self.apax_ = self.dm_.load_embeddings(lang)
