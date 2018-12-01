@@ -1012,15 +1012,15 @@ class DependencyClassifier:
             elif featureset == 'f2':
                 pos_cols = (2, 5, 6, 9, 10)
             else:
-                pos_cols = (2, 5, 6, 9, 10, 11)		
-			
+                pos_cols = (2, 5, 6, 9, 10, 11)        
+            
             self.dm_.merge_vocabs(vocab1=vocabs['POS'], vocab2=vocabs_dev['POS'], data=X_dev, columns=pos_cols)
             self.models_[model_name]['vocabs']['POS'] = vocabs['POS']
             # ... vocabs_dev['POS'] is now useless
             print("preprocess_data: aligning POS vocabs from test into train ...")            
             # handle test set (align vocabs and set unknown words)
             self.dm_.merge_vocabs(vocab1=vocabs['POS'], vocab2=vocabs_test['POS'], data=X_test, columns=pos_cols,
-                                 test_mode=True) # !!!			
+                                 test_mode=True) # !!!            
         if 'MORPHO' in vocabs:
             print("preprocess_data: merging and aligning MORPHO vocabs from dev into train ...")
             self.dm_.merge_vocabs(vocab1=vocabs['MORPHO'], vocab2=vocabs_dev['MORPHO'], data=X_dev, columns=(4, 8))
@@ -1271,9 +1271,9 @@ class DependencyClassifier:
                 if X_test[1] in vocabs['WORDS']:
                     w2_idx = vocabs['WORDS'].index(X_test[1])
                 else:
-                    w2_idx = unknown_idx
-                    
-                X_test = [ np.array([w1_idx]), np.array([w2_idx]), np.concatenate((cats_pos1, cats_pos2, cats_dist)) ]
+                    w2_idx = unknown_idx    
+                X_test = [ np.array(w1_idx).reshape(1,1), np.array(w2_idx).reshape(1,1), 
+                np.concatenate((cats_pos1, cats_pos2, cats_dist)).reshape(1,len(vocabs['POS']) * 2 + 8) ]
             else:
                 X_test = np.concatenate((cats_pos1, cats_pos2, cats_dist))
             
@@ -1314,8 +1314,9 @@ class DependencyClassifier:
             else:
                 l2_idx = unknown_lemma_idx
             # lemmas (embeddings) are set at beginning of inputs
-            X_test = [np.array([l1_idx]), np.array([l2_idx]), np.concatenate(( cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
-                                       cat_morpho2, cats_pos4, cats_pos5, cats_dist))]
+            X_test = [np.array(l1_idx).reshape(1,1), np.array(l2_idx).reshape(1,1), 
+                      np.concatenate(( cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
+                      cat_morpho2, cats_pos4, cats_pos5, cats_dist)).reshape(1,len(vocabs['POS']) * 4  + len(vocabs['MORPHO']) * 2 + 8) ]
             
         elif featureset == 'f3':
             """ 
@@ -1356,10 +1357,10 @@ class DependencyClassifier:
             else:
                 l2_idx = unknown_lemma_idx
             # lemmas (embeddings) are set at beginning of inputs
-            X_test = [np.array([l1_idx]), np.array([l2_idx]), np.concatenate((cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
-                                       cat_morpho2, cats_pos4, cats_pos5, cats_pos6, cats_dist)) ]         
+            X_test = [np.array(l1_idx).reshape(1,1), np.array(l2_idx).reshape(1,1), np.concatenate((cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
+                                       cat_morpho2, cats_pos4, cats_pos5, cats_pos6, cats_dist)).reshape(1,len(vocabs['POS']) * 5  + len(vocabs['MORPHO']) * 2 + 8) ]         
             
-        X_test = np.expand_dims(X_test, axis=0) # np.array(X_test).reshape((1, len(X_test)))
+        #X_test = np.expand_dims(X_test, axis=0) # np.array(X_test).reshape((1, len(X_test)))
         #print("process_test_data ->", X_test)
         return X_test
     
@@ -1452,7 +1453,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
                 feat = 'f1'
             if featureset == 'f1-forms' and lang != 'fr':
                 print("Generating with forms only for fr, skipping...")
-                continue				
+                continue                
             X_train, y_train, vocabs_train = dm.load_data('train', lang, feat)
             X_dev, y_dev, vocabs_dev = dm.load_data('dev', lang, feat)
             X_test, y_test, vocabs_test = dm.load_data('test', lang, feat)
@@ -1478,53 +1479,25 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             if dep_classifier.get_model_test_status(model_name):
                 print("==> Test conllu file already generated, skipping...")
                 continue
-                
-            t = time.time()
 
-            print("= Pre-processing data ...")
-            # preprocess X/Y data
-            """mod = dep_classifier.get_current_model()
-            idx_test = 40
-            w = mod['vocabs_test']['WORDS'][X_test[idx_test][0]]
-            print("test sample ", idx_test, 'id ', X_test[idx_test][0], '=', w)
-            idx = mod['vocabs']['WORDS'].index(w)
-            for x in range(len(X_train)):
-                if X_train[x][0] == idx:
-                    idx_train = x
-                    break
-            idx = mod['vocabs_dev']['WORDS'].index(w)
-            for x in range(len(X_dev)):
-                if X_dev[x][0] == idx:
-                    idx_dev = x
-                    break
-            print("x_train", X_train[idx_train])
-            print("y_train", y_train[idx_train])
-            print("x_dev", X_dev[idx_dev])
-            print("y_dev", y_dev[idx_dev])
-            print("x_test", X_test[idx_test])
-            print("y_test", y_test[idx_test])
-            dep_classifier.print_data(model_name, X_train, y_train, idx_train, 'vocabs')
-            dep_classifier.print_data(model_name, X_dev, y_dev, idx_dev, 'vocabs_dev')
-            dep_classifier.print_data(model_name, X_test, y_test, idx_test, 'vocabs_test')"""
-            X_train, y_train, X_dev, y_dev, X_test, y_test = dep_classifier.preprocess_data(model_name, 
+            if not dep_classifier.get_model_status(model_name):
+                t = time.time()
+
+                print("= Pre-processing data ...")
+                X_train, y_train, X_dev, y_dev, X_test, y_test = dep_classifier.preprocess_data(model_name, 
                                                                                 X_train, y_train, 
                                                                                 X_dev, y_dev, 
                                                                                 X_test, y_test)
-            dep_classifier.save_model(model_name) # needed if vocabs were augmented
-            print("  ... preprocessed data in ", time.time() - t)
-            """print("x_train", X_train[idx_train])
-            print("y_train", y_train[idx_train])
-            print("x_dev", X_dev[idx_dev])
-            print("y_dev", y_dev[idx_dev])
-            print("x_test", X_test[idx_test])
-            print("y_test", y_test[idx_test])   """     
-            t = time.time()
-            print("= Preprocessing embeddings ...")
-            # load pretrained embeddings
-            # embeddings have already been processed
-            dep_classifier.preprocess_embeddings(model_name, augment_vocabs=True)
+                dep_classifier.save_model(model_name) # needed if vocabs were augmented
+                print("  ... preprocessed data in ", time.time() - t)
 
-            print("  ... preprocessed embeddings in ", time.time() - t)
+                t = time.time()            
+                print("= Preprocessing embeddings ...")
+                # load pretrained embeddings
+                # embeddings have already been processed
+                dep_classifier.preprocess_embeddings(model_name, augment_vocabs=True)
+
+                print("  ... preprocessed embeddings in ", time.time() - t)
 
             t = time.time()
             print("= Creating neural network architecture ...")
@@ -1534,11 +1507,11 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             net = None
             if not existsnet:
                 dep_classifier.create_network(network_name, model_name, nb_classes=nb_classes, dropout=True)
-                if net is None:
-                    print("  ==> could not create network architecture for this model !!!")
             else:
                 print("network architecture already exists, loaded from disk")
             net = dep_classifier.get_network(network_name)
+            if net is None:
+                    print("  ==> could not create network architecture for this model !!!")
             
             print()
             print(net.summary())
@@ -1548,42 +1521,45 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
 
             #dep_classifier.print_status()
             
-            print()
-            print("===== TRAINING NEURAL NETWORK =====")
-            print()           
-        
-        
-            #@TODO currently if recalled network will be trained again for epochs if it already exists
-            print("= Training for {epochs} epochs ...".format(epochs=epochs))
-            inputs = []
-            inputs_dev = []
-            inputs_test = []
-            if featureset == 'f1':
-                inputs = [X_train]
-                inputs_dev = [X_dev]
-                inputs_test = [X_test]
+            if dep_classifier.get_model_status(model_name):
+                print("   neural network already trained, compute conllu output")
             else:
-                inputs = [X_train[:, 0], X_train[:, 1], X_train[:, 2:X_train.shape[1]]]
-                inputs_dev = [X_dev[:, 0], X_dev[:, 1], X_dev[:, 2:X_dev.shape[1]]]
-                inputs_test = [X_test[:, 0], X_test[:, 1], X_test[:, 2:X_test.shape[1]]]
+            
+                print()
+                print("===== TRAINING NEURAL NETWORK =====")
+                print()           
+        
+        
+                #@TODO currently if recalled network will be trained again for epochs if it already exists
+                print("= Training for {epochs} epochs ...".format(epochs=epochs))
+                inputs = []
+                inputs_dev = []
+                inputs_test = []
+                if featureset == 'f1':
+                    inputs = [X_train]
+                    inputs_dev = [X_dev]
+                    inputs_test = [X_test]
+                else:
+                    inputs = [X_train[:, 0], X_train[:, 1], X_train[:, 2:X_train.shape[1]]]
+                    inputs_dev = [X_dev[:, 0], X_dev[:, 1], X_dev[:, 2:X_dev.shape[1]]]
+                    inputs_test = [X_test[:, 0], X_test[:, 1], X_test[:, 2:X_test.shape[1]]]
                 
-            if net is not None:
-                history = net.fit(inputs, y_train, validation_data=(inputs_dev, y_dev), batch_size=128, epochs=epochs)
-            else:
-                print("problem : net is none")
+                if net is not None:
+                    history = net.fit(inputs, y_train, validation_data=(inputs_dev, y_dev), batch_size=128, epochs=epochs)
+                else:
+                    print("problem : net is none")
             
-            # save the network
-            print("= Saving network architecture ...")
-            dep_classifier.save_network(network_name)
+                # save the network
+                print("= Saving network architecture ...")
+                dep_classifier.save_network(network_name)
             
-            dep_classifier.set_model_done(model_name)
-            dep_classifier.save_model(model_name)            
+                dep_classifier.set_model_done(model_name)
+                dep_classifier.save_model(model_name)            
             
         
-            #@TODO plot history ?
-            print("= Evaluating ...")
-            results = net.evaluate(inputs_test, y_test, batch_size=128)
-            print("  ==> (temporary) results for {lang} / {featureset}: ", results)
+                print("= Evaluating ...")
+                results = net.evaluate(inputs_test, y_test, batch_size=128)
+                print("  ==> (temporary) results for {lang} / {featureset}: ", results)
             
             print()
             print("===== GENERATING TEST RESULTS =====")
@@ -1603,100 +1579,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             dep_classifier.remove_network(network_name)
             dep_classifier.remove_model(model_name)
 
-main(epochs=10)
+main(epochs=1)
 
 
-# In[80]:
 
-
-import sys
-if True:
-    sys.exit(0)
-lang='fr'
-featureset='f1-forms'
-
-dm = DataManager('../')
-# define a manager with hard limit of 50000 for vocabularies lengths
-dep_classifier = DependencyClassifier(path='../', max_vocab_size=50000, unknown_word='<UNK>')
-
-print("= Loading data...")
-feat = featureset
-if featureset == 'f1-forms':
-    feat = 'f1'
-X_train, y_train, vocabs_train = dm.load_data('train', lang, feat)
-X_dev, y_dev, vocabs_dev = dm.load_data('dev', lang, feat)
-X_test, y_test, vocabs_test = dm.load_data('test', lang, feat)
-
-nb_classes = len(vocabs_train['LABELS'])
-
-model_name = "{featureset}_{lang}".format(featureset=featureset, lang=lang)
-
-if featureset is 'f1-forms':
-    model_name = model_name + '-forms'
-
-# create a TAL model for this combination
-exists = dep_classifier.load_model(model_name)
-if exists and dep_classifier.get_model_status(model_name):
-    print("==> Neural network for this model already prepared")
-else:
-    print("feat create ", feat)
-    dep_classifier.create_model(model_name, lang, feat, featureset == 'f1-forms', 
-                                vocabs_train, vocabs_dev, vocabs_test)
-
-    
-print("= Pre-processing data ...")
-# preprocess X/Y data
-mod = dep_classifier.get_current_model()
-idx_test = 40
-w = mod['vocabs_test']['WORDS'][X_test[idx_test][0]]
-print("test sample ", idx_test, 'id ', X_test[idx_test][0], '=', w)
-idx = mod['vocabs']['WORDS'].index(w)
-for x in range(len(X_train)):
-    if X_train[x][0] == idx:
-        idx_train = x
-        break
-idx = mod['vocabs_dev']['WORDS'].index(w)
-print (idx)
-for x in range(len(X_dev)):
-    if X_train[x][0] == idx:
-        idx_dev = x
-        break
-print("x_train", X_train[idx_train])
-print("y_train", y_train[idx_train])
-print("x_dev", X_dev[idx_dev])
-print("y_dev", y_dev[idx_dev])
-print("x_test", X_test[idx_test])
-print("y_test", y_test[idx_test])
-dep_classifier.print_data(model_name, X_train, y_train, idx_train, 'vocabs')
-dep_classifier.print_data(model_name, X_dev, y_dev, idx_dev, 'vocabs_dev')
-dep_classifier.print_data(model_name, X_test, y_test, idx_test, 'vocabs_test')
-X_train, y_train, X_dev, y_dev, X_test, y_test = dep_classifier.preprocess_data(model_name, 
-                                                                    X_train, y_train, 
-                                                                    X_dev, y_dev, 
-                                                                    X_test, y_test)
-
-print("x_train", X_train[idx_train])
-print("y_train", y_train[idx_train])
-print("x_dev", X_dev[idx_dev])
-print("y_dev", y_dev[idx_dev])
-print("x_test", X_test[idx_test])
-print("y_test", y_test[idx_test])      
-
-
-# In[82]:
-
-
-toto = 'f1'
-print(toto == 'f1')
-print (toto is 'f1')
-print(toto is not 'f1')
-print (toto != 'f1')
-
-
-# - il n'y a pas les mots dans les features (seulement les lemmes)
-# 
-# - ajouter les mots uniquement pour l'expérience en plus
-# 
-# - embeddings pour les lemmes: il faudrait ajouter tous les mots des embeddings ! (et pas les enlever lors de l'alignement)
-# 
-# 
