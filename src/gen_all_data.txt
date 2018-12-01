@@ -52,15 +52,21 @@ Generating data for lang en feature f3 phase dev
 b'True  :  637  / False :  275\r\nProj :  637\r\n'
 Generating data for lang en feature f3 phase test
 b'True  :  800  / False :  114\r\nProj :  800\r\n'
-File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-train.conllu
-File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-dev.conllu
+Generating data for lang ja feature f1 phase train
+b'True  :  6942  / False :  191\r\nProj :  6942\r\n'
+Generating data for lang ja feature f1 phase dev
+b'True  :  498  / False :  13\r\nProj :  498\r\n'
 Generating data for lang ja feature f1 phase test
-b'True  :  818  / False :  4\r\nProj :  818\r\n'
-File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-train.conllu
-File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-dev.conllu
+b'True  :  538  / False :  13\r\nProj :  538\r\n'
+Generating data for lang ja feature f2 phase train
+b'True  :  6942  / False :  191\r\nProj :  6942\r\n'
+Generating data for lang ja feature f2 phase dev
+b'True  :  498  / False :  13\r\nProj :  498\r\n'
 Generating data for lang ja feature f2 phase test
-b'True  :  818  / False :  4\r\nProj :  818\r\n'
-File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-train.conllu
-File does not exist, skipping:  ..\data\ud\UD_Japanese-Modern\ja_modern-ud-dev.conllu
+b'True  :  538  / False :  13\r\nProj :  538\r\n'
+Generating data for lang ja feature f3 phase train
+b'True  :  6942  / False :  191\r\nProj :  6942\r\n'
+Generating data for lang ja feature f3 phase dev
+b'True  :  498  / False :  13\r\nProj :  498\r\n'
 Generating data for lang ja feature f3 phase test
-b'True  :  818  / False :  4\r\nProj :  818\r\n'
+b'True  :  538  / False :  13\r\nProj :  538\r\n'
