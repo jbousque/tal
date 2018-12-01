@@ -1479,7 +1479,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             network_name = "{model}".format(model=model_name)
             existsnet = dep_classifier.load_network(network_name)
             print("loaded network from disk ?", existsnet)
-            if not dep_classifier.get_model_status(model_name) and not existsnet:
+            if not dep_classifier.get_model_status(model_name):
                 t = time.time()
 
                 print("= Pre-processing data ...")
@@ -1496,6 +1496,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
                 except:
                     pass	
 					
+            if not dep_classifier.get_model_status(model_name) and not existsnet:
                 t = time.time()            
                 print("= Preprocessing embeddings ...")
                 # load pretrained embeddings
