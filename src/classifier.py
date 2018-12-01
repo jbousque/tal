@@ -1109,7 +1109,7 @@ class DependencyClassifier:
             cats_dist    = to_categorical(np.abs(X_train[:, 11]), num_classes=nb_classes_dist)
             X_train = np.column_stack((X_train[:, 3], X_train[:, 7], cats_pos1, 
                                       cats_morpho1, cats_pos2, cats_pos3,
-                                cat_trains_morpho2, cats_pos4, cats_pos5, cats_dist))
+                                cat_morpho2, cats_pos4, cats_pos5, cats_dist))
             
             cats_pos1    = to_categorical(X_dev[:, 2], num_classes=nb_classes_pos)
             cats_morpho1 = to_categorical(X_dev[:, 4], num_classes=nb_classes_morpho)
@@ -1121,7 +1121,7 @@ class DependencyClassifier:
             cats_dist    = to_categorical(np.abs(X_dev[:, 11]), num_classes=nb_classes_dist)
             X_dev = np.column_stack((X_dev[:, 3], X_dev[:, 7], cats_pos1,
                                       cats_morpho1, cats_pos2, cats_pos3,
-                               cat_trains_morpho2, cats_pos4, cats_pos5, cats_dist))
+                               cat_morpho2, cats_pos4, cats_pos5, cats_dist))
             
 
             cats_pos1    = to_categorical(X_test[:, 2], num_classes=nb_classes_pos)
@@ -1159,7 +1159,7 @@ class DependencyClassifier:
             cats_pos6    = to_categorical(X_train[:, 11], num_classes=nb_classes_pos)
             cats_dist    = to_categorical(np.abs(X_train[:, 12]), num_classes=nb_classes_dist)
             X_train = np.column_stack((X_train[:, 3], X_train[:, 7], cats_pos1, cats_morpho1, 
-                                       cats_pos2, cats_pos3, cat_trains_morpho2, cats_pos4, 
+                                       cats_pos2, cats_pos3, cat_morpho2, cats_pos4, 
                                        cats_pos5, cats_pos6, cats_dist))
             
             cats_pos1    = to_categorical(X_dev[:, 2], num_classes=nb_classes_pos)
@@ -1173,7 +1173,7 @@ class DependencyClassifier:
             cats_dist    = to_categorical(np.abs(X_dev[:, 12]), num_classes=nb_classes_dist)
             X_dev = np.column_stack((X_dev[:, 3], X_dev[:, 7], cats_pos1, 
                                       cats_morpho1, cats_pos2, cats_pos3,
-                                cat_trains_morpho2, cats_pos4, cats_pos5, cats_pos6, cats_dist))
+                                cat_morpho2, cats_pos4, cats_pos5, cats_pos6, cats_dist))
             
 
             cats_pos1    = to_categorical(X_test[:, 2], num_classes=nb_classes_pos)
