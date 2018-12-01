@@ -107,7 +107,7 @@ def get_data(filename,feature):
   return X,Y
 
 
-def create_conllu(filename, feature,result_name):
+def create_conllu(filename, feature,result_name,oracle_=None):
   try:
     conlluFile = open(filename, encoding='utf-8')
   except IOError:
@@ -129,7 +129,7 @@ def create_conllu(filename, feature,result_name):
     if ligne[0] == '\n':  # Nouvelle phrase
       index = 0
 
-      arcs, x, y ,phrase_all = parser(phrase, feature, False,phrase_all=phrase_all)
+      arcs, x, y ,phrase_all = parser(phrase, feature, False,phrase_all=phrase_all,oracle=oracle_)
 
       for tok in phrase_all:
           result_conllu.write("\t".join(str(x) for x in tok))

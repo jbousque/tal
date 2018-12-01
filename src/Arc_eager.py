@@ -5,22 +5,13 @@ from generate_data import *
 
 def left_arc(stack, buffer, arcs, tab_head, index_phrase, needs):
     arcs.append((buffer[0], stack[len(stack) - 1]))
-    # if ( str(index_phrase.index(stack[len(stack)-1][0]))  not in needs): # Si le dernier mot du stack a deja sont head / stack[len(stack)-1]  in tab_head and
-    #  stack.pop(len(stack)-1)
-    # else:
-    # word = buffer.pop(0) # Retire le premier mot du buffer
-    # stack.append(word)
+
     stack.pop(len(stack) - 1)
     return stack, buffer, arcs
 
 
 def right_arc(stack, buffer, arcs, tab_head, index_phrase, needs):
     arcs.append((stack[len(stack) - 1], buffer[0]))
-
-    # if ( buffer[0] in tab_head and str(index_phrase.index(buffer[0][0]))  not in needs): # Si le premier mot du buffer à deja sont head  / buffer[0] in tab_head and
-    # word = buffer.pop(0)
-    # stack.append(word)
-    # else :
     word = buffer.pop(0)  # Retire le premier mot du buffer
     stack.append(word)
 
@@ -38,43 +29,26 @@ def reduce(stack):
     return stack
 
 
-def oracle(w1, w2, index_phrase, phrase, tab_head, needs, couples, erreur):
-    '''#print(w2[2])
-  if ( int(w1[2]) == phrase.index(w2) ):
-    if ( str(index_phrase.index(w2[0])) in needs ): 
-      needs.pop(needs.index(str(index_phrase.index(w2[0]))))
-    tab_head.append(w1)
-    return "RIGHT_"+str(w1[3]),2,tab_head,needs
-  
-  elif ( int(w2[2]) == phrase.index(w1)):
-    if ( str(index_phrase.index(w1[0])) in needs ):
-      needs.pop(needs.index(str(index_phrase.index(w1[0]))))
-    tab_head.append(w2)
-    return "LEFT_"+str(w2[3]),1,tab_head,needs
-  
-  elif (w1 in tab_head and str(index_phrase.index(w1[0])) not in needs) : 
-    return "REDUCE",4,tab_head,needs
-  '''
-    if erreur:
-        print("w1 : ", int(w1[2]), "w2:", phrase.index(w2))
-        print("w2 : ", int(w2[2]), "w1:", phrase.index(w1))
+def oracle(w1, w2, phrase, couples):
+
+
     if (int(w2[2]) == phrase.index(w1)):
         if erreur: print("ajout de :", w2)
-        return "RIGHT_" + str(w2[3]), 2, tab_head, needs
+        return "RIGHT_" + str(w2[3]), 2
 
     elif (int(w1[2]) == phrase.index(w2)):
 
         if erreur: print(w1, " ", w2)
-        return "LEFT_" + str(w1[3]), 1, tab_head, needs
+        return "LEFT_" + str(w1[3]), 1
 
     elif (w1 in tab_head):
         if (verif_reduce(phrase.index(w1), phrase.index(w2), couples, len(phrase) - 1, erreur)):
-            return "REDUCE", 4, tab_head, needs
+            return "REDUCE", 4
         else:
-            return "SHIFT", 3, tab_head, needs
+            return "SHIFT", 3
     else:
 
-        return "SHIFT", 3, tab_head, needs
+        return "SHIFT", 3
 
 
 def verif_reduce(index, index2, couples, taille, erreur):  ## A OPTIMISER
@@ -126,7 +100,7 @@ def parser(phrase, feature, erreur,phrase_all=None,oracle_=None):
     if phrase_all != None :
         for i in range(len(phrase_all)):
             if ("-" not in phrase_all[i][0]):
-                #phrase_all[i][6] = index_root  # GOV  ### PROBLEME
+                #phrase_all[i][6] = index_root  # GOV
                 phrase_all[i][7] = "_"  # Lab
     X = []
     Y = []
@@ -159,13 +133,20 @@ def parser(phrase, feature, erreur,phrase_all=None,oracle_=None):
     buffer_done = []
 
     while ((len(buffer) != 0) and (len(stack) != 0)):
-        # print()
-        # print("buffer : ", [i[0] for i in buffer])
-        # print("stack : ", [i[0] for i in stack])
-        # print(needs)
+
+        if (stack[len(stack) - 1] == root):
+            dist = abs(0 - phrase.index(buffer[0]))
+        elif (buffer[0] == root):
+            dist = abs(phrase.index(stack[len(stack) - 1]))
+        else:
+            dist = abs(phrase.index(stack[len(stack) - 1]) - phrase.index(buffer[0]))
+
+        if dist > 7: dist = 7
+
         if oracle_ == None:
-            Y_actu, gold, tab_head, needs = oracle(stack[len(stack) - 1], buffer[0], index_phrase, phrase, tab_head, needs,
-                                               couples, erreur)
+            Y_actu, gold = oracle(stack[len(stack) - 1], buffer[0], phrase,couples)
+        else :
+            Y_actu, gold = oracle_test(stack[len(stack) - 1], buffer[0],dist,oracle_ )
         if phrase_all != None :
             if "RIGHT" in Y_actu or "LEFT" in Y_actu :
                 gov_lab = Y_actu.split("_")
@@ -185,22 +166,8 @@ def parser(phrase, feature, erreur,phrase_all=None,oracle_=None):
                     phrase_all[index_encours][6] = index2  # GOV
                     phrase_all[index_encours][7] = lab  # Lab
 
-        if (stack[len(stack) - 1] == root):
-            dist = abs(0 - phrase.index(buffer[0]))
-        elif (buffer[0] == root):
-            dist = abs(phrase.index(stack[len(stack) - 1]))
-        else:
-            dist = abs(phrase.index(stack[len(stack) - 1]) - phrase.index(buffer[0]))
 
-        if dist > 7: dist = 7
 
-        '''
-    print(stack[len(stack)-1])
-    print()
-    print(buffer[0])
-    print()
-    print(dist)
-    '''
         if (feature == "f1"):
             X.append([stack[len(stack) - 1][0],  # FORM mot 1
                       buffer[0][0],  # FORM mot 2
@@ -271,16 +238,6 @@ def parser(phrase, feature, erreur,phrase_all=None,oracle_=None):
                       buffer_after_pos,
                       dist])
 
-        if (erreur):
-            print(stack[len(stack) - 1])
-            print(buffer[0])
-            print()
-            print(stack)
-            print(buffer)
-            print()
-            print(Y_actu)
-            print()
-            print()
 
         Y.append(Y_actu)
 
@@ -379,3 +336,29 @@ def is_proj(couple, taille):
                         if x1 in np.arange(y + 1, x): return False
 
     return True
+
+def oracle_test(w1, w2 ,dist, model):
+    """
+
+    :param w1: mot stack 
+              feature1 => w1[FORM , POS , GOV , LABEL]
+              feature2 => w2[FORM , POS , GOV , LABEL, LEMMA , MORPHO]
+    :param w2: mot buffer
+    :param dist: distance entre w1 et w2 
+    :param model:
+
+    :return: y : prediction convertie par rapport au vocab ( ex : RIGHT_det )
+    :return: gold : 1 = left / 2 = right / 3 = shift / 4 = reduce
+    """
+
+
+    # Convertir les donnnées
+
+
+    # Prédiction
+
+
+    # Convertir la précition
+
+
+    return y , gold
