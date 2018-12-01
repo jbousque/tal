@@ -26,19 +26,14 @@ def main(argv):
           f = open(sortie,"w+b")
           pickle.dump(dico,f)
           f.close()
-        elif (features =="f2"):
+        elif (features =="f2" or features == "f3"):
           X , Y , vocab_mots , vocab_pdd , vocab_lemma, vocab_morpho, vocab_liaisons = get_all_data(conllu,feature=features)
           dico = { "X" : X , "Y":Y , "vocab_mots":vocab_mots , "vocab_pdd":vocab_pdd , "vocab_liaisons":vocab_liaisons,
                    "vocab_lemma":vocab_lemma,"vocab_morpho":vocab_morpho}
           f = open(sortie,"w+b")
           pickle.dump(dico,f)
           f.close()
-        elif (features =="f3"):
-          X , Y , vocab_mots , vocab_pdd , vocab_lemma, vocab_morpho, vocab_liaisons = get_all_data(conllu,feature=features)
-          dico = { "X" : X , "Y":Y , "vocab_mots":vocab_mots , "vocab_pdd":vocab_pdd , "vocab_liaisons":vocab_liaisons}
-          f = open(sortie,"w+b")
-          pickle.dump(dico,f)
-          f.close()
+
   
 if __name__== "__main__":
   main(sys.argv[1:])
