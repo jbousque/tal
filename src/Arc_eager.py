@@ -383,7 +383,6 @@ def oracle_test(w1, w2 ,dist, oracle,proj):
 
     model = oracle.get_current_model()
     featureset = model['featureset']
-    labels = oracle.get_labels_vocab()
 
     X_test_i = []
     gold = 0
@@ -404,10 +403,6 @@ def oracle_test(w1, w2 ,dist, oracle,proj):
 
 
     elif featureset == 'f2':
-        # ...
-        pass
-    else:
-        # ...
         pass
 
     # Prédiction
@@ -416,7 +411,7 @@ def oracle_test(w1, w2 ,dist, oracle,proj):
 
     # Convertir la précition
 
-    y = labels[y_pred]
+    y = oracle.get_label(y_pred)
 
     if "LEFT" in y:
         gold = 1
