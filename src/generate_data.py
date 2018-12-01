@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import copy
 from Dicos import *
 from Arc_eager import *
@@ -37,7 +38,7 @@ def get_data(filename,feature):
           z += [1]
       else: 
         for z in x:
-          z += [1]
+          z += [0]
       X += x
       Y += y
       '''
@@ -104,6 +105,64 @@ def get_data(filename,feature):
   print("Proj : ", count_proj)
   #sys.exit("Error message")
   return X,Y
+
+
+def create_conllu(filename, feature,result_name):
+  try:
+    conlluFile = open(filename, encoding='utf-8')
+  except IOError:
+    print('cannot open', filename)
+    exit(1)
+
+  result_conllu = open(result_name, "w",encoding='utf-8')
+  phrase = []
+  phrase_all = []
+  X = []
+  Y = []
+
+  go = 0
+  fa = 0
+
+  count_proj = 0
+  index = 0
+  for ligne in conlluFile:
+    if ligne[0] == '\n':  # Nouvelle phrase
+      index = 0
+
+      arcs, x, y ,phrase_all = parser(phrase, feature, False,phrase_all=phrase_all)
+
+      for tok in phrase_all:
+          result_conllu.write("\t".join(str(x) for x in tok))
+
+
+      result_conllu.write("\n")
+
+
+      phrase = []
+      phrase_all = []
+    if ligne[0] == '#':
+
+        #print(str(ligne))
+
+        result_conllu.write(ligne)
+    if ligne[0] != '\n' and ligne[0] != '#':
+      tokens = ligne.split("\t")
+
+      if ("-" not in tokens[0]):
+        if (feature == "f1"):
+          # FORM , POS , GOV , LABEL
+          phrase.append([tokens[1], tokens[3], tokens[6], tokens[7], index])
+        elif (feature == "f2" or feature == "f3"):
+          # FORM , POS , GOV , LABEL, LEMMA , MORPHO
+          phrase.append([tokens[1], tokens[3], tokens[6], tokens[7], tokens[2], tokens[5], index])
+
+        index += 1
+      phrase_all.append(tokens)
+
+  result_conllu.close()
+
+
+
 
 def get_unique(X,Y):
   b = []

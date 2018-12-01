@@ -12,8 +12,10 @@ def main(argv):
         conllu = argv[0]
         sortie = "../resultat/"+argv[1]
         features = argv[2]
-    
-        if ( str(features) not in ["f1","f2","f3"]):
+        if (str(features)  in ["f1_w", "f2_w", "f3_w"]):
+            feat = features.split('_')
+            create_conllu(conllu, feat[0], sortie)
+        elif ( str(features) not in ["f1","f2","f3"]):
             print("Usage python main.py fichier.conllu nomFichierSortie features[\"f1\",\"f2\",\"f3\"]")
             sys.exit(2)
             

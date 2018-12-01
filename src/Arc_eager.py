@@ -59,12 +59,11 @@ def oracle(w1, w2, index_phrase, phrase, tab_head, needs, couples, erreur):
         print("w1 : ", int(w1[2]), "w2:", phrase.index(w2))
         print("w2 : ", int(w2[2]), "w1:", phrase.index(w1))
     if (int(w2[2]) == phrase.index(w1)):
-        tab_head.append(w2)
         if erreur: print("ajout de :", w2)
         return "RIGHT_" + str(w2[3]), 2, tab_head, needs
 
     elif (int(w1[2]) == phrase.index(w2)):
-        tab_head.append(w1)
+
         if erreur: print(w1, " ", w2)
         return "LEFT_" + str(w1[3]), 1, tab_head, needs
 
@@ -110,7 +109,7 @@ def get_need(phrase):
     return need
 
 
-def parser(phrase, feature, erreur):
+def parser(phrase, feature, erreur,phrase_all=None,oracle_=None):
     couples = get_couple(phrase)
     tab_head = []
     buffer = phrase
@@ -124,7 +123,11 @@ def parser(phrase, feature, erreur):
     arcs = []
     stack = []
     stack.append(root)  ## root
-
+    if phrase_all != None :
+        for i in range(len(phrase_all)):
+            if ("-" not in phrase_all[i][0]):
+                #phrase_all[i][6] = index_root  # GOV  ### PROBLEME
+                phrase_all[i][7] = "_"  # Lab
     X = []
     Y = []
 
@@ -160,9 +163,27 @@ def parser(phrase, feature, erreur):
         # print("buffer : ", [i[0] for i in buffer])
         # print("stack : ", [i[0] for i in stack])
         # print(needs)
-
-        Y_actu, gold, tab_head, needs = oracle(stack[len(stack) - 1], buffer[0], index_phrase, phrase, tab_head, needs,
+        if oracle_ == None:
+            Y_actu, gold, tab_head, needs = oracle(stack[len(stack) - 1], buffer[0], index_phrase, phrase, tab_head, needs,
                                                couples, erreur)
+        if phrase_all != None :
+            if "RIGHT" in Y_actu or "LEFT" in Y_actu :
+                gov_lab = Y_actu.split("_")
+                gov = gov_lab[0]
+                lab = gov_lab[1]
+                index1 = phrase.index(stack[len(stack) - 1])
+                index2 = phrase.index(buffer[0])
+
+                if "RIGHT" in gov :
+                    all_index = [ i[0] for i in phrase_all ]
+                    index_encours = all_index.index(str(index2))
+                    phrase_all[index_encours][6] = index1# GOV
+                    phrase_all[index_encours][7] =  lab# Lab
+                if "LEFT" in gov :
+                    all_index = [ i[0] for i in phrase_all ]
+                    index_encours = all_index.index(str(index1))
+                    phrase_all[index_encours][6] = index2  # GOV
+                    phrase_all[index_encours][7] = lab  # Lab
 
         if (stack[len(stack) - 1] == root):
             dist = abs(0 - phrase.index(buffer[0]))
@@ -264,8 +285,10 @@ def parser(phrase, feature, erreur):
         Y.append(Y_actu)
 
         if (gold == 1):
+            tab_head.append(stack[len(stack) - 1])
             stack, buffer, arcs = left_arc(stack, buffer, arcs, tab_head, index_phrase, needs)
         elif (gold == 2):
+            tab_head.append(buffer[0])
             stack, buffer, arcs = right_arc(stack, buffer, arcs, tab_head, index_phrase, needs)
         elif (gold == 3):
             stack, buffer = shift(stack, buffer)
@@ -303,7 +326,10 @@ def parser(phrase, feature, erreur):
 
 
     # Retour
-    return arcs, X, Y
+    if phrase_all != None:
+        return arcs, X, Y , phrase_all
+    else :
+        return arcs, X, Y
 
 
 def get_couple(phrase):
