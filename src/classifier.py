@@ -753,7 +753,7 @@ class DependencyClassifier:
                 B.-1.POS
                 B.1.POS
                 DIST"""
-            dim_features = len(vocabs['POS']) * 4  + len(vocabs['MORPHO']) * 2 + 8
+            dim_features = len(vocabs['POS']) * 5  + len(vocabs['MORPHO']) * 2 + 8
         else:
             """ S.0.POS
                 S.0.LEMMA   # embeddings
@@ -767,7 +767,7 @@ class DependencyClassifier:
                 B.1.POS
                 DIST"""
             # same size as 'f2'
-            dim_features = len(vocabs['POS']) * 5 + len(vocabs['MORPHO']) * 2 + 8
+            dim_features = len(vocabs['POS']) * 6 + len(vocabs['MORPHO']) * 2 + 8
         print("  expecting {n} features dim".format(n=dim_features))
         
         # define input for features
@@ -1491,6 +1491,12 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
                 dep_classifier.save_model(model_name) # needed if vocabs were augmented
                 print("  ... preprocessed data in ", time.time() - t)
 
+                try:
+                    print("load_preprocessed: loaded X_train = ", X_train.shape, ", Y = ", Y_train.shape, ", vocabs = ", 
+                        (''.join("{key} ({len}), ".format(key=k, len=len(dep_classifier.get_current_model()['vocabs'][k])) for k in vocabs.keys())))
+                except:
+                    pass	
+					
                 t = time.time()            
                 print("= Preprocessing embeddings ...")
                 # load pretrained embeddings
