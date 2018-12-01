@@ -22,7 +22,7 @@ for lang in ['fr', 'nl', 'en', 'ja']: # ja only has a test set ?!
                 
             elif lang == 'ja':
                 
-                conllu_name = "..\\data\\ud\\UD_Japanese-Modern\\ja_modern-ud-{phase}.conllu".format(phase=phase)
+                conllu_name = "..\\data\\ud\\UD_Japanese-GSD\\ja_gsd-ud-{phase}.conllu".format(phase=phase)
             
             output_name = "{f}_{lang}-{phase}".format(f=f, lang=lang, phase=phase)
         
