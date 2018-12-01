@@ -1479,8 +1479,11 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             if dep_classifier.get_model_test_status(model_name):
                 print("==> Test conllu file already generated, skipping...")
                 continue
-
-            if not dep_classifier.get_model_status(model_name):
+            # if there exists a network in .h5, no need to realign data and reload embeddings				
+            network_name = "{model}".format(model=model_name)
+            existsnet = dep_classifier.load_network(network_name)
+            print("loaded network from disk ?", existsnet)
+            if not dep_classifier.get_model_status(model_name) and not existsnet:
                 t = time.time()
 
                 print("= Pre-processing data ...")
@@ -1508,8 +1511,8 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             t = time.time()
             print("= Creating neural network architecture ...")
             # create a classifier for this TAL model
-            network_name = "{model}".format(model=model_name)
-            existsnet = dep_classifier.load_network(network_name)
+            #network_name = "{model}".format(model=model_name)
+            #existsnet = dep_classifier.load_network(network_name)
             net = None
             if not existsnet:
                 dep_classifier.create_network(network_name, model_name, nb_classes=nb_classes, dropout=True)
