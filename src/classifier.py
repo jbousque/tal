@@ -89,6 +89,8 @@ class DataManager:
                 
             if isinstance(vocabs['POS'], np.ndarray):
                 vocabs['POS'] = vocabs['POS'].tolist()
+            if self.UNKNOWN_WORD not in vocabs['POS']:
+                vocabs['POS'].append(self.UNKNOWN_WORD)
             if isinstance(vocabs['LABELS'], np.ndarray):
                 vocabs['LABELS'] = vocabs['LABELS'].tolist()
             if self.UNKNOWN_WORD not in vocabs['LABELS']:
@@ -1247,6 +1249,9 @@ class DependencyClassifier:
         if 'MORPHO' in vocabs.keys():
             if self.UNKNOWN_WORD in vocabs['MORPHO']:
                 unknown_morpho_idx = vocabs['MORPHO'].index(self.UNKNOWN_WORD)
+        if 'POS' in vocabs.keys():
+            if self.UNKNOWN_WORD in vocabs['POS']:
+                unknown_pos_idx = vocabs['POS'].index(self.UNKNOWN_WORD)				
         
         # align to vocabs indices (the ones known by the keras network)
         if featureset == 'f1':
@@ -1254,8 +1259,16 @@ class DependencyClassifier:
             2 S.0.POS
             3 B.0.POS
             4 DIST"""
-            cats_pos1 = to_categorical(vocabs['POS'].index(X_test[2]), num_classes=nb_classes_pos)
-            cats_pos2 = to_categorical(vocabs['POS'].index(X_test[3]), num_classes=nb_classes_pos)           
+            if X_test[2] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[2])
+            else:
+                pos_idx = unknown_pos_idx
+            cats_pos1 = to_categorical(pos_idx, num_classes=nb_classes_pos)
+            if X_test[3] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[3])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos2 = to_categorical(pos_idx, num_classes=nb_classes_pos)           
             # dist is positive for arc eager
             cats_dist = to_categorical(np.abs(X_test[4]), num_classes=nb_classes_dist)
             
@@ -1284,22 +1297,42 @@ class DependencyClassifier:
             8 B.0.MORPHO
             9 B.-1.POS
             10 B.1.POS
-            11 DIST"""        
-            cats_pos1    = to_categorical(vocabs['POS'].index(X_test[2]), num_classes=nb_classes_pos)
+            11 DIST"""     
+            if X_test[2] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[2])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos1    = to_categorical(pos_idx, num_classes=nb_classes_pos)
             if X_test[4] in vocabs['MORPHO']:
                 m_idx = vocabs['MORPHO'].index(X_test[4])
             else:
                 m_idx = unknown_morpho_idx
             cats_morpho1 = to_categorical(m_idx, num_classes=nb_classes_morpho)
-            cats_pos2    = to_categorical(vocabs['POS'].index(X_test[5]), num_classes=nb_classes_pos)
-            cats_pos3    = to_categorical(vocabs['POS'].index(X_test[6]), num_classes=nb_classes_pos)
+            if X_test[5] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[5])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos2    = to_categorical(pos_idx, num_classes=nb_classes_pos)
+            if X_test[6] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[6])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos3    = to_categorical(pos_idx, num_classes=nb_classes_pos)
             if X_test[8] in vocabs['MORPHO']:
                 m_idx = vocabs['MORPHO'].index(X_test[8])
             else:
                 m_idx = unknown_morpho_idx            
             cats_morpho2 = to_categorical(m_idx, num_classes=nb_classes_morpho)
-            cats_pos4    = to_categorical(vocabs['POS'].index(X_test[9]), num_classes=nb_classes_pos)
-            cats_pos5    = to_categorical(vocabs['POS'].index(X_test[10]), num_classes=nb_classes_pos)
+            if X_test[9] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[9])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos4    = to_categorical(pos_idx, num_classes=nb_classes_pos)
+            if X_test[10] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[10])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos5    = to_categorical(pos_idx, num_classes=nb_classes_pos)			
             cats_dist    = to_categorical(np.abs(X_test[11]), num_classes=nb_classes_dist)
             if X_test[3] in vocabs['LEMMA']:
                 l1_idx = vocabs['LEMMA'].index(X_test[3])
@@ -1327,22 +1360,46 @@ class DependencyClassifier:
             10 B.-1.POS
             11 B.1.POS
             12 DIST"""  
-            cats_pos1    = to_categorical(vocabs['POS'].index(X_test[2]), num_classes=nb_classes_pos)
+            if X_test[2] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[2])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos1    = to_categorical(pos_idx, num_classes=nb_classes_pos)
             if X_test[4] in vocabs['MORPHO']:
                 m_idx = vocabs['MORPHO'].index(X_test[4])
             else:
                 m_idx = unknown_morpho_idx
             cats_morpho1 = to_categorical(m_idx, num_classes=nb_classes_morpho)
-            cats_pos2    = to_categorical(vocabs['POS'].index(X_test[5]), num_classes=nb_classes_pos)
-            cats_pos3    = to_categorical(vocabs['POS'].index(X_test[6]), num_classes=nb_classes_pos)
+            if X_test[5] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[5])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos2    = to_categorical(pos_idx, num_classes=nb_classes_pos)
+            if X_test[6] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[6])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos3    = to_categorical(pos_idx, num_classes=nb_classes_pos)
             if X_test[8] in vocabs['MORPHO']:
                 m_idx = vocabs['MORPHO'].index(X_test[8])
             else:
                 m_idx = unknown_morpho_idx            
             cats_morpho2 = to_categorical(m_idx, num_classes=nb_classes_morpho)
-            cats_pos4    = to_categorical(vocabs['POS'].index(X_test[9]), num_classes=nb_classes_pos)
-            cats_pos5    = to_categorical(vocabs['POS'].index(X_test[10]), num_classes=nb_classes_pos)
-            cats_pos6    = to_categorical(vocabs['POS'].index(X_test[11]), num_classes=nb_classes_pos)
+            if X_test[9] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[9])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos4    = to_categorical(pos_idx, num_classes=nb_classes_pos)
+            if X_test[10] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[10])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos5    = to_categorical(pos_idx, num_classes=nb_classes_pos)	
+            if X_test[11] in vocabs['POS']:
+                pos_idx = vocabs['POS'].index(X_test[11])
+            else:
+                pos_idx = unknown_pos_idx			
+            cats_pos6    = to_categorical(pos_idx, num_classes=nb_classes_pos)
             cats_dist    = to_categorical(np.abs(X_test[12]), num_classes=nb_classes_dist)
             if X_test[3] in vocabs['LEMMA']:
                 l1_idx = vocabs['LEMMA'].index(X_test[3])
@@ -1426,7 +1483,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
                  'ja' : os.path.join("..", "UD_Japanese-GSD", "ja_gsd-ud-test.conllu")
                 }
 
-    for lang in ['fr', 'nl', 'en', 'ja']:
+    for lang in ['fr', 'nl', 'ja', 'en']:
     
         for featureset in ['f1', 'f1-forms', 'f2', 'f3']:
             
