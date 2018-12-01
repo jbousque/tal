@@ -1201,7 +1201,7 @@ class DependencyClassifier:
         FORM , POS , GOV , LABEL, LEMMA , MORPHO
         """
         
-        print("process_data({data})".format(data=X_test))
+        #print("process_data({data})".format(data=X_test))
         
         model = self.get_current_model()
         featureset = model['featureset']
@@ -1250,9 +1250,9 @@ class DependencyClassifier:
                 else:
                     w2_idx = unknown_idx
                     
-                X_test = np.asarray((w1_idx, w2_idx, cats_pos1, cats_pos2, cats_dist))
+                X_test = np.concatenate((w1_idx, w2_idx, cats_pos1, cats_pos2, cats_dist))
             else:
-                X_test = np.asarray((cats_pos1, cats_pos2, cats_dist))
+                X_test = np.concatenate((cats_pos1, cats_pos2, cats_dist))
             
         elif featureset == 'f2':
             """ 
@@ -1291,7 +1291,7 @@ class DependencyClassifier:
             else:
                 l2_idx = unknown_lemma_idx
             # lemmas (embeddings) are set at beginning of inputs
-            X_train = np.asarray((l1_idx, l2_idx, cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
+            X_test = np.concatenate((l1_idx, l2_idx, cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
                                        cat_morpho2, cats_pos4, cats_pos5, cats_dist))
             
         elif featureset == 'f3':
@@ -1333,10 +1333,11 @@ class DependencyClassifier:
             else:
                 l2_idx = unknown_lemma_idx
             # lemmas (embeddings) are set at beginning of inputs
-            X_test = np.asarray((l1_idx, l2_idx, cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
+            X_test = np.concatenate((l1_idx, l2_idx, cats_pos1, cats_morpho1, cats_pos2, cats_pos3,
                                        cat_morpho2, cats_pos4, cats_pos5, cats_pos6, cats_dist))            
             
-                
+        X_test = X_test.reshape((1, len(X_test)))
+        #print("process_test_data ->", X_test)
         return X_test
     
     def get_label(self, y_pred):
@@ -1389,47 +1390,9 @@ class DependencyClassifier:
 # In[4]:
 
 
-import importlib 
 import time
 import generate_data as aegen
 
-importlib.reload(aegen)
-
-def STUB(class_mgr):
-    """
-    Arc eager on keras model, using vocab_test (aligned to keras network embeddings), writing conllu file
-    as fname.conllu.
-    """
-    keras_model = class_mgr.get_current_network()
-    
-    model = class_mgr.get_current_model()
-    featureset = model['featureset']
-    lang = model['lang']
-    
-    print("ArcEager: generate test results for {lang} / {featureset}".format(lang=lang, featureset=featureset))
-    
-    if featureset == 'f1':
-        if model['use_forms']:
-            #X_test = [w1, w2, s0pos, b0pos, dist]
-            pass
-        else:
-            #X_test = [s0pos, b0pos, dist]
-            pass
-    elif featureset == 'f2':
-        # ...
-        pass
-    else:
-        # ...
-        pass
-    
-    # align to neural network input formats
-    #X_test = class_mgr.process_test_data(X_test)
-    #y_pred = keras_model.predict(X_test)
-    #y = keras_model.get_label(y_pred) # converts from one-hot to label string "RIGHT_det", using vocab
-    
-    # ...
-        
-    
 
 def main(epochs=10, max_vocab_size=100000, unknown_word='<UNK>'):
 
@@ -1447,7 +1410,7 @@ def main(epochs=10, max_vocab_size=100000, unknown_word='<UNK>'):
     
         for featureset in ['f1', 'f1-forms', 'f2', 'f3']:
             
-            test_results_fname = "{featureset}_{lang}_results.conllu"
+            test_results_fname = "{featureset}_{lang}_results.conllu".format(featureset=featureset, lang=lang)
     
             if os.path.isfile(test_results_fname):
                 print("{f} already exists, skipping this task".format(f=test_results_fname))
@@ -1494,7 +1457,7 @@ def main(epochs=10, max_vocab_size=100000, unknown_word='<UNK>'):
 
             print("= Pre-processing data ...")
             # preprocess X/Y data
-            mod = dep_classifier.get_current_model()
+            """mod = dep_classifier.get_current_model()
             idx_test = 40
             w = mod['vocabs_test']['WORDS'][X_test[idx_test][0]]
             print("test sample ", idx_test, 'id ', X_test[idx_test][0], '=', w)
@@ -1516,19 +1479,19 @@ def main(epochs=10, max_vocab_size=100000, unknown_word='<UNK>'):
             print("y_test", y_test[idx_test])
             dep_classifier.print_data(model_name, X_train, y_train, idx_train, 'vocabs')
             dep_classifier.print_data(model_name, X_dev, y_dev, idx_dev, 'vocabs_dev')
-            dep_classifier.print_data(model_name, X_test, y_test, idx_test, 'vocabs_test')
+            dep_classifier.print_data(model_name, X_test, y_test, idx_test, 'vocabs_test')"""
             X_train, y_train, X_dev, y_dev, X_test, y_test = dep_classifier.preprocess_data(model_name, 
                                                                                 X_train, y_train, 
                                                                                 X_dev, y_dev, 
                                                                                 X_test, y_test)
 
             print("  ... preprocessed data in ", time.time() - t)
-            print("x_train", X_train[idx_train])
+            """print("x_train", X_train[idx_train])
             print("y_train", y_train[idx_train])
             print("x_dev", X_dev[idx_dev])
             print("y_dev", y_dev[idx_dev])
             print("x_test", X_test[idx_test])
-            print("y_test", y_test[idx_test])        
+            print("y_test", y_test[idx_test])   """     
             t = time.time()
             print("= Preprocessing embeddings ...")
             # load pretrained embeddings
