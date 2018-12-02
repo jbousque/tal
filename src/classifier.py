@@ -1572,7 +1572,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             # create a classifier for this TAL model
             #network_name = "{model}".format(model=model_name)
             #existsnet = dep_classifier.load_network(network_name)
-            nb_classes = len(vocabs_train['LABELS'])
+            nb_classes = len(dep_classifier.get_current_model()['vocabs']['LABELS'])
             net = None
             if not existsnet:
                 dep_classifier.create_network(network_name, model_name, nb_classes=nb_classes, dropout=True)
