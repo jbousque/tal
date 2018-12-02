@@ -266,17 +266,18 @@ def parser(phrase, feature,proj,phrase_all=None,oracle_=None):
                 lab = gov_lab[1]
                 index1 = phrase.index(stack[len(stack) - 1])
                 index2 = phrase.index(buffer[0])
-
-                if "RIGHT" in gov :
-                    all_index = [ i[0] for i in phrase_all ]
-                    index_encours = all_index.index(str(index2))
-                    phrase_all[index_encours][6] = index1# GOV
-                    phrase_all[index_encours][7] =  lab# Lab
-                if "LEFT" in gov :
-                    all_index = [ i[0] for i in phrase_all ]
-                    index_encours = all_index.index(str(index1))
-                    phrase_all[index_encours][6] = index2  # GOV
-                    phrase_all[index_encours][7] = lab  # Lab
+                if index2 > 0:
+                    if "RIGHT" in gov :
+                        all_index = [ i[0] for i in phrase_all ]
+                        index_encours = all_index.index(str(index2))
+                        phrase_all[index_encours][6] = index1# GOV
+                        phrase_all[index_encours][7] =  lab# Lab
+                if index1 > 0:
+                    if "LEFT" in gov :
+                        all_index = [ i[0] for i in phrase_all ]
+                        index_encours = all_index.index(str(index1))
+                        phrase_all[index_encours][6] = index2  # GOV
+                        phrase_all[index_encours][7] = lab  # Lab
 
 
 
