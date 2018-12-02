@@ -899,8 +899,6 @@ class DependencyClassifier:
         print("preprocess_embeddings(model",model_name,',augment',augment_vocabs,
               ',f',featureset,',forms',use_forms,',lang',lang,')')
         
-        """model f1_fr ,augment True ,f f1 ,forms False ,lang fr )"""
-        
         if (self.embeddings_for_words_ is None and use_forms) or (self.embeddings_for_lemmas_ is None and featureset != 'f1'):
             if self.embeddings_ is None:
                 print("preprocess_embeddings: loading original embeddings ...")
@@ -1486,6 +1484,10 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
     for lang in ['fr', 'nl', 'ja', 'en']:
     
         for featureset in ['f1', 'f1-forms', 'f2', 'f3']:
+		
+            # cache for embeddings does not work, cleaning dep classifier to avoid issue
+            dep_classifier.embeddings_for_words_ = None
+            dep_classifier.embeddings_for_lemmas_ = None
             
             test_results_fname = "{featureset}_{lang}_results.conllu".format(featureset=featureset, lang=lang)
     
@@ -1642,7 +1644,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             dep_classifier.remove_network(network_name)
             dep_classifier.remove_model(model_name)
 
-main(epochs=1)
+main(epochs=5)
 
 
 
