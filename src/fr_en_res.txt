@@ -1,0 +1,39 @@
+(m2iaaa) C:\IAAA\tal-github\UD_French-GSD>python ..\evaluation_script\conll17_ud_eval.py fr_gsd-ud-test.conllu f1-forms_fr_results.conllu
+LAS F1 Score: 67.28
+
+(m2iaaa) C:\IAAA\tal-github\UD_French-GSD>python ..\evaluation_script\conll17_ud_eval.py fr_gsd-ud-test.conllu f1_fr_results.conllu
+LAS F1 Score: 62.50
+
+(m2iaaa) C:\IAAA\tal-github\UD_French-GSD>python ..\evaluation_script\conll17_ud_eval.py fr_gsd-ud-test.conllu f2_fr_results.conllu
+LAS F1 Score: 72.93
+
+(m2iaaa) C:\IAAA\tal-github\UD_French-GSD>python ..\evaluation_script\conll17_ud_eval.py fr_gsd-ud-test.conllu f3_fr_results.conllu
+LAS F1 Score: 74.12
+
+(m2iaaa) C:\IAAA\tal-github\UD_French-GSD>cd ..\UD_English-LinES
+
+(m2iaaa) C:\IAAA\tal-github\UD_English-LinES>python ..\evaluation_script\conll17_ud_eval.py en_lines-ud-dev.conllu f1_en_results.conllu
+Traceback (most recent call last):
+  File "..\evaluation_script\conll17_ud_eval.py", line 507, in <module>
+    main()
+  File "..\evaluation_script\conll17_ud_eval.py", line 485, in main
+    evaluation = evaluate_wrapper(args)
+  File "..\evaluation_script\conll17_ud_eval.py", line 464, in evaluate_wrapper
+    return evaluate(gold_ud, system_ud, deprel_weights)
+  File "..\evaluation_script\conll17_ud_eval.py", line 405, in evaluate
+    "".join(system_ud.characters[index:index + 20])
+__main__.UDError: The concatenation of tokens in gold file and in system file differ!
+First 20 differing characters in gold file: 'Whenauserconnectstot' and system file: 'Ifyouplotmultiplecha'
+
+(m2iaaa) C:\IAAA\tal-github\UD_English-LinES>python ..\evaluation_script\conll17_ud_eval.py en_lines-ud-dev.conllu f2_en_results.conllu
+Traceback (most recent call last):
+  File "..\evaluation_script\conll17_ud_eval.py", line 507, in <module>
+    main()
+  File "..\evaluation_script\conll17_ud_eval.py", line 485, in main
+    evaluation = evaluate_wrapper(args)
+  File "..\evaluation_script\conll17_ud_eval.py", line 464, in evaluate_wrapper
+    return evaluate(gold_ud, system_ud, deprel_weights)
+  File "..\evaluation_script\conll17_ud_eval.py", line 405, in evaluate
+    "".join(system_ud.characters[index:index + 20])
+__main__.UDError: The concatenation of tokens in gold file and in system file differ!
+First 20 differing characters in gold file: 'Whenauserconnectstot' and system file: 'Ifyouplotmultiplecha'
