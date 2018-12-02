@@ -1189,6 +1189,9 @@ class DependencyClassifier:
         y_train = to_categorical(y_train, num_classes=nb_classes)
         y_dev = to_categorical(y_dev, num_classes=nb_classes)
         y_test = to_categorical(y_test, num_classes=nb_classes)
+		
+        print("preprocess_data: X_train {x_tr} y_train {y_tr} X_dev {x_d} y_dev {y_d} X_test {x_t} y_test {y_t}"
+              .format(x_tr=X_train.shape, y_tr=y_train.shape, x_d=X_dev.shape, y_d=y_dev.shape, x_t=X_test.shape, y_t=y_test.shape))		
                 
         return X_train, y_train, X_dev, y_dev, X_test, y_test
     
@@ -1515,7 +1518,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
 
             print("  ... loaded data in ", time.time() - t)
 
-            nb_classes = len(vocabs_train['LABELS'])
+            
 
             model_name = "{featureset}_{lang}".format(featureset=featureset, lang=lang)
             
@@ -1569,6 +1572,7 @@ def main(epochs=10, max_vocab_size=50000, unknown_word='<UNK>'):
             # create a classifier for this TAL model
             #network_name = "{model}".format(model=model_name)
             #existsnet = dep_classifier.load_network(network_name)
+            nb_classes = len(vocabs_train['LABELS'])
             net = None
             if not existsnet:
                 dep_classifier.create_network(network_name, model_name, nb_classes=nb_classes, dropout=True)
